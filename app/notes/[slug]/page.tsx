@@ -17,15 +17,15 @@ const getNote = cache(async (slug: string) => {
     note_slug_arg: slug,
   }).single() as { data: NoteType | null };
   return note;
-});
-  } catch (error) {
+ } catch (error) {
       console.error('Error fetching note:', error);
       return null;
     }
+  });
 
 // Dynamically determine if this is a user note
 export async function generateStaticParams() {
-  const supabase = createBrowserClient();
+  const supabase = createServerClient();
   const { data: posts } = await supabase
     .from("notes")
     .select("slug")
