@@ -78,7 +78,8 @@ export default async function NotePage({
 }) {
   const slug = params.slug.replace(/^notes\//, '');
   try {
-  const note = await getNote(slug);
+      let note: NoteType | null = null;
+    note = await getNote(slug);
 
   if (!note) {
     return redirect("/notes/error");
