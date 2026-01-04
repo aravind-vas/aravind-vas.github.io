@@ -11,12 +11,17 @@ export const revalidate = 86400; // 24 hours
 
 // Cached function to fetch a note by slug - eliminates duplicate fetches
 const getNote = cache(async (slug: string) => {
+  try {
   const supabase = createServerClient();
   const { data: note } = await supabase.rpc("select_note", {
     note_slug_arg: slug,
   }).single() as { data: NoteType | null };
   return note;
 });
+  } catch (error) {
+      console.error('Error fetching note:', error);
+      return null;
+    }
 
 // Dynamically determine if this is a user note
 export async function generateStaticParams() {
@@ -72,11 +77,16 @@ export default async function NotePage({
   params: { slug: string };
 }) {
   const slug = params.slug.replace(/^notes\//, '');
+  try {
   const note = await getNote(slug);
 
   if (!note) {
     return redirect("/notes/error");
   }
+      } catch (error) {
+        console.error('Error loading note:', error);
+        return redirect("/notes/error");
+      }
 
   return (
     <div className="w-full min-h-dvh p-3">
