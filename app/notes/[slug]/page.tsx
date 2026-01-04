@@ -26,7 +26,12 @@ export async function generateStaticParams() {
     .select("slug")
     .eq("public", true);
 
-  return posts!.map(({ slug }) => ({
+  // Return empty array if posts is null or undefined
+  if (!posts) {
+    return [];
+  }
+
+  return posts.map(({ slug }) => ({
     slug,
   }));
 }
