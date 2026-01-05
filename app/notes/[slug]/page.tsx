@@ -46,8 +46,7 @@ export async function generateMetadata({
   const title = note.title || "new note";
   const emoji = note.emoji || "👋🏼";
   return {
-    title: `alana goyal | ${title}`,
-    openGraph: {
+      title: `Aravind | ${title}`,    openGraph: {
       images: [
         `/notes/api/og/?title=${encodeURIComponent(title)}&emoji=${encodeURIComponent(
           emoji
