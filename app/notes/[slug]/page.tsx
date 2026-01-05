@@ -15,8 +15,7 @@ const getNote = cache(async (slug: string) => {
   const { data: note } = await supabase.rpc("select_note", {
     note_slug_arg: slug,
   }).single() as { data: NoteType | null };
-  return note ? { ...note, pageData: note.content } : null;;
-    console.log('getNote result:', note, 'slug:', slug);
+return note ? { ...note, pageData: typeof note.content === 'string' ? note.content : '' } : null;
   
 });
 
@@ -66,7 +65,6 @@ export default async function NotePage({
 }) {
   const slug = params.slug.replace(/^notes\\/, '');
   const note = await getNote(slug);
-    console.log('NotePage note:', note, 'slug:', slug);
   
   if (!note) {
     return redirect("/notes/error");
