@@ -15,7 +15,7 @@ const getNote = cache(async (slug: string) => {
   const { data: note } = await supabase.rpc("select_note", {
     note_slug_arg: slug,
   }).single() as { data: NoteType | null };
-  return note;
+  return note ? { ...note, pageData: note.content } : null;;
     console.log('getNote result:', note, 'slug:', slug);
   
 });
