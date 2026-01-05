@@ -16,6 +16,8 @@ const getNote = cache(async (slug: string) => {
     note_slug_arg: slug,
   }).single() as { data: NoteType | null };
   return note;
+    console.log('getNote result:', note, 'slug:', slug);
+  
 });
 
 // Dynamically determine if this is a user note
@@ -64,6 +66,8 @@ export default async function NotePage({
 }) {
   const slug = params.slug.replace(/^notes\\/, '');
   const note = await getNote(slug);
+    console.log('NotePage note:', note, 'slug:', slug);
+  
   if (!note) {
     return redirect("/notes/error");
   }
