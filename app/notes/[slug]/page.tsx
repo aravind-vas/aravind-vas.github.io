@@ -15,8 +15,7 @@ const getNote = cache(async (slug: string) => {
   const { data: note } = await supabase.rpc("select_note", {
     note_slug_arg: slug,
   }).single() as { data: NoteType | null };
-return note ? { ...note, pageData: typeof note.content === 'string' ? note.content : '' } : null;
-  
+return note;  
 });
 
 // Dynamically determine if this is a user note
