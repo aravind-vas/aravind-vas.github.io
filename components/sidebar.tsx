@@ -182,10 +182,10 @@ export default function Sidebar({
   }, [setLocalSearchResults, setHighlightedIndex]);
 
   const flattenedNotes = useCallback(() => {
-    return categoryOrder.flatMap((category) =>
+    return dynamicCategoryOrder.flatMap((category) =>
       groupedNotes[category] ? groupedNotes[category] : []
     );
-  }, [groupedNotes]);
+  }, [groupedNotes, dynamicCategoryOrder]);
 
   const navigateNotes = useCallback(
     (direction: "up" | "down") => {
