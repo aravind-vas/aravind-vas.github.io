@@ -61,6 +61,8 @@ export default function Sidebar({
   );
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [groupedNotes, setGroupedNotes] = useState<any>({});
+   const [dynamicCategoryOrder, setDynamicCategoryOrder] = useState(["pinned", "today", "yesterday", "7", "30", "older"]);
+  
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [openSwipeItemSlug, setOpenSwipeItemSlug] = useState<string | null>(
     null
@@ -154,6 +156,11 @@ export default function Sidebar({
     );
     const grouped = groupNotesByCategory(userSpecificNotes, pinnedNotes);
     sortGroupedNotes(grouped);
+        const baseOrder = ["pinned", "today", "yesterday", "7", "30", "older"];
+    const customCategories = Object.keys(grouped).filter(cat => !baseOrder.includes(cat));
+    const order = [...baseOrder.filter(cat => grouped[cat]), ...customCategories];
+    setDynamicCategoryOrder(order);
+    
     setGroupedNotes(grouped);
   }, [notes, sessionId, pinnedNotes]);
 
@@ -477,7 +484,7 @@ export default function Sidebar({
               pinnedNotes={pinnedNotes}
               localSearchResults={localSearchResults}
               highlightedIndex={highlightedIndex}
-              categoryOrder={categoryOrder}
+              categoryOrder={dynamicCategoryOrder}
               labels={labels}
               handleNoteDelete={handleNoteDelete}
               openSwipeItemSlug={openSwipeItemSlug}
