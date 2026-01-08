@@ -1,3 +1,5 @@
+> This project is a fork of [alanagoyal/alanagoyal](https://github.com/alanagoyal/alanagoyal), an Apple Notes-inspired personal website. It has been customized and deployed for personal use, with enhancements to fix sidebar rendering of custom note categories.
+
 # [notes](https://alanagoyal.com/notes)
 
 i'm obsessed with re-creating apple products. this one is a notes-inspired website that doubles as my personal website.
@@ -224,3 +226,28 @@ you can also manually add images:
 ## license
 
 licensed under the [mit license](https://github.com/alanagoyal/alanagoyal/blob/main/LICENSE.md).
+
+## changelog
+
+Key practical changes made from the original alanagoyal/alanagoyal codebase:
+
+### Bug Fixes
+- **Fixed sidebar note rendering for custom categories**: Implemented dynamic category order in sidebar.tsx to support notes with custom categories. The sidebar now correctly displays all notes regardless of their category field.
+
+### Configuration Changes
+- **Rebranded site title**: Updated config/site.ts to change from "alana goyal" to "Aravind"
+- **Updated URLs and metadata**: Changed site domain and references throughout the config
+
+### Deployment
+- Deployed on **Vercel**
+- Configured **Supabase** backend with custom notes data
+- ISR configured with revalidate = 0 for immediate updates
+
+### Data
+- Added sample public notes for testing
+- Maintained session-based architecture for private notes
+
+### Development Notes
+- Core architecture remains unchanged: session-based public/private note system
+- All Next.js 14, TypeScript, and Supabase configurations compatible with original
+- Sidebar enhancement is backward-compatible
