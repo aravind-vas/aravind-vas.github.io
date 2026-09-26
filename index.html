@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <title>Aravind Vasudevan</title>
-<meta name="description" content="Aravind Vasudevan is a product manager at Zynga, working on live-ops for a mobile racing game. He grew up in Tamil Nadu and lives in Bangalore.">
+<meta name="description" content="Aravind Vasudevan — product manager at Zynga, working on live-ops. From Tamil Nadu, in Bangalore.">
 
 <link rel="canonical" href="https://aravindvas.com/">
-<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#16161a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#faf8f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a2029" media="(prefers-color-scheme: dark)">
 
 <meta property="og:type" content="profile">
 <meta property="og:site_name" content="Aravind Vasudevan">
 <meta property="og:title" content="Aravind Vasudevan">
-<meta property="og:description" content="Product manager at Zynga. From Tamil Nadu, in Bangalore.">
+<meta property="og:description" content="Product manager at Zynga, working on live-ops. From Tamil Nadu, in Bangalore.">
 <meta property="og:url" content="https://aravindvas.com/">
 <meta property="og:image" content="https://aravindvas.com/og.png">
 <meta property="og:image:width" content="1200">
@@ -23,111 +23,303 @@
 <meta name="twitter:image" content="https://aravindvas.com/og.png">
 
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 
-<!-- Set the view before first paint so the correct tab is showing on arrival. -->
 <script>
+/* Set the view and the theme before first paint. */
 (function () {
+  var r = document.documentElement;
   try {
     var v = new URLSearchParams(location.search).get("view");
-    if (v !== "pro" && v !== "personal") v = "personal";
-    document.documentElement.dataset.view = v;
-  } catch (e) { document.documentElement.dataset.view = "personal"; }
+    r.dataset.view = (v === "personal") ? "personal" : "professional";
+    r.dataset.mode = r.dataset.view;
+  } catch (e) { r.dataset.view = "professional"; r.dataset.mode = "professional"; }
+  try {
+    var t = localStorage.getItem("av-theme");
+    if (t !== "light" && t !== "dark") {
+      t = (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+    }
+    r.dataset.theme = t;
+  } catch (e) { r.dataset.theme = "light"; }
 })();
 </script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
 
+<body class="theme-light">
 <a class="skip-link" href="#main">Skip to content</a>
 
-<div class="page">
+<main class="shell">
 
+  <!-- ================= HEADER ================= -->
   <header class="masthead">
-    <a class="wordmark" href="/">Aravind Vasudevan</a>
+    <nav class="nav" aria-label="global">
+      <div class="nav__side nav__side--left">
+        <a href="/" class="nav__home">Aravind Vasudevan</a>
+      </div>
 
-    <nav class="tabs" aria-label="Choose a view">
-      <a class="tab" href="?view=personal" data-view="personal">Personal</a>
-      <a class="tab" href="?view=pro"     data-view="pro">Professional</a>
+      <div class="nav__center">
+        <div class="mode-toggle" id="modeToggle" role="group" aria-label="Choose a view">
+          <span class="ornament ornament--left" aria-hidden="true"></span>
+          <div class="toggle-track">
+            <div class="toggle-indicator" id="toggleIndicator" aria-hidden="true"></div>
+            <button class="toggle-option" type="button" data-mode="professional" aria-pressed="true">
+              <span class="option-icon" aria-hidden="true">&#9881;</span>
+              <span class="option-label">Professional</span>
+            </button>
+            <button class="toggle-option" type="button" data-mode="personal" aria-pressed="false">
+              <span class="option-icon" aria-hidden="true">&#10022;</span>
+              <span class="option-label">Personal</span>
+            </button>
+          </div>
+          <span class="ornament ornament--right" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <div class="nav__side nav__side--right">
+        <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch to dark mode">
+          <span class="theme-btn__icon theme-btn__icon--sun" aria-hidden="true">&#9788;</span>
+          <span class="theme-btn__icon theme-btn__icon--moon" aria-hidden="true">&#9790;</span>
+        </button>
+      </div>
     </nav>
   </header>
 
-  <main id="main">
+  <!-- ================= BODY ================= -->
+  <div class="stack">
 
-    <!-- ============ PERSONAL ============ -->
-    <section class="view" data-panel="personal">
+    <!-- ---------- identity ---------- -->
+    <section class="identity">
+      <div class="flip" tabindex="0" role="img"
+           aria-label="A monogram, A V">
+        <div class="flip__inner">
+          <div class="flip__face flip__face--front">
+            <span class="monogram">AV</span>
+          </div>
+          <div class="flip__face flip__face--back">
+            <span class="sigil" aria-hidden="true">&#10022;</span>
+          </div>
+        </div>
+      </div>
 
-      <h1>Aravind Vasudevan<span class="dot">.</span></h1>
-      <p class="lede">Product manager at Zynga. From Tamil Nadu, in Bangalore.</p>
+      <h1 class="name" data-mode="professional">Aravind Vasudevan</h1>
+      <h1 class="name" data-mode="personal">Aravind</h1>
+    </section>
 
-      <div class="prose">
-        <p>I grew up in Tamil Nadu and live in Bangalore with my family. I studied mechanical engineering,
-        which is a roundabout way of saying I really wanted to solve problems &mdash; and eventually found a
-        job where that was the whole point.</p>
+    <!-- ---------- about: professional ---------- -->
+    <section class="row" data-mode="professional">
+      <h2 class="row__label">About</h2>
+      <div class="row__body prose prose--lead">
+        <p>Engineer by training, product manager by accident. I work on live&#8209;ops at
+        <a class="illuminated-link" href="https://www.zynga.com" rel="noopener">Zynga</a>, which mostly
+        means deciding what to put in front of players, and when.</p>
 
-        <p>These days I work on live&#8209;ops for a mobile racing game: the events, the rewards, and the
-        endless question of what to run next and when. It is a strange job to explain at a dinner party, and
-        I have stopped trying to make it sound normal.</p>
+        <p>Before that I spent four years on the other side of the &ldquo;offline&rdquo; fence &mdash; product
+        and analytics for brands running loyalty and retention programmes &mdash; and a couple of years before
+        that as a business analyst, mostly writing SQL and being genuinely surprised by what the data said.</p>
 
-        <p>Outside of work I referee football, which I am qualified to do and about which I have strong and
-        mostly unpopular opinions. I host quizzes. I do the food at family weddings, which is a tradition
-        rather than a talent.</p>
+        <p>The through-line is a preference for the unglamorous middle: the framework that decides what ships,
+        the model that says whether it worked, and the discipline of getting that answer in front of the people
+        who can do something about it. I&rsquo;d rather build the thing than present the thing.</p>
 
-        <p>I am a cyclist, an amateur cook, and a reliably bad chess player. I like long walks, long flights,
-        and getting a bit lost in a new city.</p>
+        <p>I&rsquo;m the kind of person who keeps a spreadsheet of lessons learned, and who believes most product
+        problems dissolve when you actually go and watch somebody use the product.</p>
+      </div>
+    </section>
+
+    <!-- ---------- about: personal ---------- -->
+    <section class="row" data-mode="personal">
+      <h2 class="row__label">About</h2>
+      <div class="row__body prose prose--lead">
+        <p>I grew up in Tamil Nadu, went to engineering college for a mechanical engineering degree I don&rsquo;t
+        use, and ended up in Bangalore building live&#8209;ops for a mobile racing game. Every one of those steps
+        was a detour that turned out to be the point.</p>
+
+        <p>Outside work I referee football, which I&rsquo;m qualified to do and about which I have strong and
+        mostly unpopular opinions. I host quiz nights. I do the cooking at family weddings, which in my family
+        is a tradition rather than a talent.</p>
+
+        <p>I&rsquo;m a cyclist, an amateur cook, and a reliably bad chess player. I like long walks, long
+        flights, and getting a bit lost in a city I don&rsquo;t know yet.</p>
 
         <p>Ask me about Tamil food, football, or why live&#8209;ops is harder than it sounds.</p>
       </div>
+    </section>
 
-      <div class="links-row">
-        <a href="https://www.linkedin.com/in/aravind-v" rel="noopener">LinkedIn</a>
-        <a href="https://github.com/aravind-vas" rel="noopener">GitHub</a>
-        <a href="mailto:arvndv@gmail.com">Email</a>
+    <!-- ---------- divider ---------- -->
+    <div class="divider" aria-hidden="true">
+      <span class="divider__rule"></span>
+      <span class="divider__mark">&#10022;</span>
+      <span class="divider__rule"></span>
+    </div>
+
+    <!-- ---------- notes: professional ---------- -->
+    <section class="row" data-mode="professional">
+      <h2 class="row__label">Notes</h2>
+      <div class="row__body">
+        <ul class="notes">
+          <li>
+            <div class="notes__main">
+              <div class="notes__head">
+                <span class="pin" title="Pinned">&#10022;</span>
+                <span class="notes__title">Cadence beats spectacle</span>
+                <span class="notes__meta">&middot; product</span>
+              </div>
+              <p class="notes__blurb">Why a reliable, predictable event beats a spectacular one, and what that
+              means for how you schedule a live&#8209;ops calendar.</p>
+            </div>
+          </li>
+          <li>
+            <div class="notes__main">
+              <div class="notes__head">
+                <span class="notes__title">The dashboard was never the bottleneck</span>
+                <span class="notes__meta">&middot; analytics</span>
+              </div>
+              <p class="notes__blurb">A simple number that six teams read beats a sophisticated model that two
+              people read.</p>
+            </div>
+          </li>
+          <li>
+            <div class="notes__main">
+              <div class="notes__head">
+                <span class="notes__title">Write it down once</span>
+                <span class="notes__meta">&middot; craft</span>
+              </div>
+              <p class="notes__blurb">On keeping one honest record of your work instead of a polished version
+              per application.</p>
+            </div>
+          </li>
+        </ul>
       </div>
     </section>
 
-    <!-- ============ PROFESSIONAL ============ -->
-    <section class="view" data-panel="pro" hidden>
-
-      <h1>Aravind Vasudevan<span class="dot">.</span></h1>
-      <p class="lede">Product manager &mdash; games, data, and live operations.</p>
-
-      <div class="prose">
-        <p>I&rsquo;m a product manager at <a href="https://www.zynga.com" rel="noopener">Zynga</a>, working on
-        live&#8209;ops for a large mobile racing title. I own the roadmap for the events and features that
-        ship into that game, and I&rsquo;m responsible for the revenue they generate.</p>
-
-        <p>My work sits mostly in the unglamorous middle of the job: deciding what to ship and when, building
-        the models that tell us whether it worked, and making sure the answer reaches the people who can act on
-        it. I&rsquo;d rather build the framework than the deck.</p>
-
-        <p>Before Zynga I was at <a href="https://www.capillary.com" rel="noopener">Capillary Technologies</a>,
-        in product management and analytics for brands running loyalty and retention programmes. Before that
-        I was a business analyst at Analytics Quotient, working on marketing analytics for retail clients.</p>
-
-        <p>Somewhere in there I did an MBA at ISB, having started out as a mechanical engineer. In hindsight
-        that detour is the most useful thing I&rsquo;ve done &mdash; it&rsquo;s what turned a job I was good at
-        into one I actually wanted.</p>
-
-        <p>I care about products that earn their retention, about measurement that changes a decision rather
-        than just describing one, and about teams that argue about the work instead of about who&rsquo;s right.
-        I write about these things occasionally, and I build small tools when I want to understand something
-        properly.</p>
-      </div>
-
-      <div class="links-row">
-        <a href="https://www.linkedin.com/in/aravind-v" rel="noopener">LinkedIn</a>
-        <a href="https://github.com/aravind-vas" rel="noopener">GitHub</a>
-        <a href="mailto:arvndv@gmail.com">Email</a>
+    <!-- ---------- notes: personal ---------- -->
+    <section class="row" data-mode="personal">
+      <h2 class="row__label">Notes</h2>
+      <div class="row__body">
+        <ul class="notes">
+          <li>
+            <div class="notes__main">
+              <div class="notes__head">
+                <span class="notes__title">The 20% problem</span>
+                <span class="notes__meta">&middot; on work</span>
+              </div>
+              <p class="notes__blurb">Being too busy to notice you&rsquo;re bored is its own kind of problem.</p>
+            </div>
+          </li>
+          <li>
+            <div class="notes__main">
+              <div class="notes__head">
+                <span class="notes__title">Refereeing a game you care about</span>
+                <span class="notes__meta">&middot; football</span>
+              </div>
+              <p class="notes__blurb">The only sport where doing the job badly is immediately obvious to
+              everyone watching.</p>
+            </div>
+          </li>
+          <li>
+            <div class="notes__main">
+              <div class="notes__head">
+                <span class="notes__title">Cooking for forty people</span>
+                <span class="notes__meta">&middot; weddings</span>
+              </div>
+              <p class="notes__blurb">On feeding a crowd without anyone noticing you&rsquo;re managing a
+              production line.</p>
+            </div>
+          </li>
+        </ul>
       </div>
     </section>
 
-  </main>
+    <!-- ---------- made: professional only ---------- -->
+    <div class="divider" data-mode="professional" aria-hidden="true">
+      <span class="divider__rule"></span>
+      <span class="divider__mark">&#10022;</span>
+      <span class="divider__rule"></span>
+    </div>
 
-  <footer class="footer">
-    <p>Aravind Vasudevan &middot; Bangalore</p>
+    <section class="row" data-mode="professional">
+      <h2 class="row__label">Things I&rsquo;ve Made</h2>
+      <div class="row__body">
+        <div class="cards">
+
+          <a class="card" href="https://xueai.app" rel="noopener">
+            <div class="card__art card__art--a" aria-hidden="true"><span class="card__glyph">AI</span></div>
+            <div class="card__body">
+              <h3 class="card__title">AI Engineering, Beginner to Mastery</h3>
+              <p class="card__desc">An interactive course for AI product managers, from what a token is to
+              shipping something that works.</p>
+              <span class="card__tag">Live</span>
+            </div>
+          </a>
+
+          <a class="card" href="https://prep.aravindvas.com" rel="noopener">
+            <div class="card__art card__art--b" aria-hidden="true"><span class="card__glyph">SPM</span></div>
+            <div class="card__body">
+              <h3 class="card__title">Interview Prep Dashboard</h3>
+              <p class="card__desc">My own preparation system &mdash; a running record of questions, stories and
+              the gaps between them.</p>
+              <span class="card__tag">Live</span>
+            </div>
+          </a>
+
+          <div class="card card--static">
+            <div class="card__art card__art--c" aria-hidden="true"><span class="card__glyph">LAB</span></div>
+            <div class="card__body">
+              <h3 class="card__title">Performance Lab</h3>
+              <p class="card__desc">A health report rebuilt to run on my own bloodwork instead of a sample
+              patient&rsquo;s.</p>
+              <span class="card__tag">In progress</span>
+            </div>
+          </div>
+
+          <div class="card card--static">
+            <div class="card__art card__art--d" aria-hidden="true"><span class="card__glyph">AO</span></div>
+            <div class="card__body">
+              <h3 class="card__title">Alpha School &mdash; System Atlas</h3>
+              <p class="card__desc">A working map of what it would take to run a school with no teachers in
+              front of the class.</p>
+              <span class="card__tag">Research</span>
+            </div>
+          </div>
+
+          <div class="card card--static">
+            <div class="card__art card__art--e" aria-hidden="true"><span class="card__glyph">AV</span></div>
+            <div class="card__body">
+              <h3 class="card__title">This site</h3>
+              <p class="card__desc">Two views of the same person. No framework, no build step, nothing to
+              break.</p>
+              <span class="card__tag">Live</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- elsewhere: personal only ---------- -->
+    <section class="row" data-mode="personal">
+      <h2 class="row__label">Elsewhere</h2>
+      <div class="row__body">
+        <ul class="links">
+          <li><a class="illuminated-link" href="https://www.linkedin.com/in/aravind-v" rel="noopener">LinkedIn</a></li>
+          <li><a class="illuminated-link" href="https://github.com/aravind-vas" rel="noopener">GitHub</a></li>
+          <li><a class="illuminated-link" href="mailto:arvndv@gmail.com">Email</a></li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="foot">
+    <p class="foot__line" data-mode="professional">Aravind Vasudevan &middot; Product, games, and live operations</p>
+    <p class="foot__line" data-mode="personal">Aravind &middot; Bangalore &middot; mostly out of doors</p>
   </footer>
-</div>
+
+</main>
 
 <script src="script.js" defer></script>
 </body>

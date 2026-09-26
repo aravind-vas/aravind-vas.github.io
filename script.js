@@ -1,56 +1,78 @@
 /* ==========================================================
    Aravind Vasudevan — aravindvas.com
-   Tab switching only. The page is fully readable without JS:
-   the inline head script sets the view, and both panels are
-   in the DOM. This just wires the links and keeps the URL honest.
+   Mode toggle + theme toggle. The head script already set both
+   before paint, so this only wires interaction and keeps the
+   URL shareable.
    ========================================================== */
 
 (function () {
   "use strict";
 
   var root = document.documentElement;
-  var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
-  var panels = Array.prototype.slice.call(document.querySelectorAll(".view"));
+  var VIEWS = ["professional", "personal"];
 
-  function apply(view) {
-    if (view !== "pro" && view !== "personal") view = "personal";
+  /* ---------- view ---------- */
+
+  var buttons = Array.prototype.slice.call(document.querySelectorAll(".toggle-option"));
+
+  function setView(view, push) {
+    if (VIEWS.indexOf(view) === -1) view = "professional";
+    root.dataset.mode = view;
     root.dataset.view = view;
 
-    panels.forEach(function (p) {
-      p.hidden = p.dataset.panel !== view;
+    buttons.forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.mode === view));
     });
 
-    tabs.forEach(function (t) {
-      if (t.dataset.view === view) t.setAttribute("aria-current", "page");
-      else t.removeAttribute("aria-current");
-    });
-
-    document.title = view === "pro"
-      ? "Aravind Vasudevan — Product"
-      : "Aravind Vasudevan";
+    try {
+      var url = new URL(window.location.href);
+      if (view === "personal") url.searchParams.set("view", "personal");
+      else url.searchParams.delete("view");
+      if (push) history.pushState({ view: view }, "", url);
+    } catch (e) { /* file:// or no history — tabs still work */ }
   }
 
-  tabs.forEach(function (tab) {
-    tab.addEventListener("click", function (e) {
-      e.preventDefault();
-      var view = tab.dataset.view;
-
-      // Keep the address bar in sync so the view is linkable and
-      // survives a refresh or a shared URL.
-      var url = new URL(window.location.href);
-      url.searchParams.set("view", view);
-      history.pushState({ view: view }, "", url);
-
-      apply(view);
-    });
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () { setView(b.dataset.mode, true); });
   });
 
   window.addEventListener("popstate", function () {
     var v = new URLSearchParams(window.location.search).get("view");
-    apply(v);
+    setView(v === "personal" ? "personal" : "professional", false);
   });
 
-  // Normalise the initial state (the head script already set it).
-  apply(root.dataset.view);
+  setView(root.dataset.view, false);
+
+  /* ---------- theme ---------- */
+
+  var themeBtn = document.getElementById("themeBtn");
+
+  function labelTheme() {
+    if (!themeBtn) return;
+    var dark = root.dataset.theme === "dark";
+    themeBtn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+  }
+
+  if (themeBtn) {
+    themeBtn.addEventListener("click", function () {
+      var next = root.dataset.theme === "dark" ? "light" : "dark";
+      root.dataset.theme = next;
+      document.body.classList.toggle("theme-light", next === "light");
+      document.body.classList.toggle("theme-dark", next === "dark");
+      try { localStorage.setItem("av-theme", next); } catch (e) {}
+      labelTheme();
+    });
+  }
+
+  labelTheme();
+
+  /* ---------- the flip card is also a link target on touch ---------- */
+
+  var flip = document.querySelector(".flip");
+  if (flip) {
+    flip.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); }
+    });
+  }
 
 })();
