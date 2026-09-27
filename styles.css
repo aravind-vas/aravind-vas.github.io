@@ -1,23 +1,32 @@
 /* ==========================================================
    Aravind Vasudevan — aravindvas.com
-   Structure and palette modelled on thariq.io: warm paper,
-   gold + bronze, EB Garamond prose under Cormorant headings,
-   and a spring-eased mode toggle.
+
+   Geometry, type scale and colour tokens measured directly from
+   thariq.io's rendered computed styles at a 1280px viewport.
+   Values here are the ones he actually ships, not guesses.
    ========================================================== */
 
 :root {
+  /* measured from thariq.io :root */
   --background: 42 45% 97%;
   --foreground: 215 28% 17%;
   --card: 40 40% 95%;
-  --card-foreground: 215 28% 17%;
   --muted: 40 25% 88%;
   --muted-foreground: 215 15% 45%;
-  --accent: 43 74% 52%;
   --border: 40 20% 82%;
+  --accent: 43 74% 52%;
   --gold: 43 74% 52%;
   --bronze: 30 45% 45%;
   --burnt-sienna: 15 60% 45%;
-  --radius: .5rem;
+
+  /* measured geometry */
+  --shell-max: 75rem;   /* 1200px */
+  --nav-track: 280px;
+  --nav-track-h: 48px;
+  --nav-btn: 139px;
+  --gap-section: 40px;  /* gap-y-10 */
+  --label-w: 20%;       /* md:w-1/5 */
+
   --shadow-warm: 0 4px 20px -4px hsl(var(--bronze) / .18), 0 2px 8px -2px hsl(var(--gold) / .1);
   --shadow-warm-lg: 0 10px 40px -8px hsl(var(--bronze) / .22), 0 4px 16px -4px hsl(var(--gold) / .14);
   --ease-spring: cubic-bezier(.68, -.55, .265, 1.55);
@@ -27,11 +36,10 @@
   --background: 215 35% 12%;
   --foreground: 42 45% 95%;
   --card: 215 30% 15%;
-  --card-foreground: 42 45% 95%;
   --muted: 215 20% 25%;
   --muted-foreground: 42 20% 65%;
-  --accent: 43 65% 48%;
   --border: 215 20% 25%;
+  --accent: 43 65% 48%;
   --gold: 43 65% 48%;
   --bronze: 30 40% 38%;
   --burnt-sienna: 15 50% 40%;
@@ -41,22 +49,27 @@
 
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
+/* thariq.io keeps the UI in the system sans and reserves the serif
+   for headings and the flip card. Same split here. */
 body {
   margin: 0;
   background: hsl(var(--background));
-  color: hsl(var(--foreground) / .82);
-  font-family: "EB Garamond", Georgia, serif;
-  font-size: .92rem;
-  line-height: 1.65;
+  color: hsl(var(--foreground));
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
   -webkit-font-smoothing: antialiased;
   transition: background-color .4s ease, color .4s ease;
 }
 
 ::selection { background: hsl(var(--gold) / .28); color: hsl(var(--foreground)); }
 
-/* mode-gated visibility: [data-mode] on <html> picks one set */
-[data-mode="professional"] [data-mode="personal"],
-[data-mode="personal"] [data-mode="professional"] { display: none; }
+/* Content is gated on the document's data-mode. The toggle buttons use
+   data-target, not data-mode, so they can never hide themselves. */
+[data-mode="professional"] .stack [data-mode="personal"],
+[data-mode="professional"] .foot [data-mode="personal"],
+[data-mode="personal"] .stack [data-mode="professional"],
+[data-mode="personal"] .foot [data-mode="professional"] { display: none; }
 
 .skip-link {
   position: absolute; left: -9999px; top: 0; z-index: 40;
@@ -65,12 +78,10 @@ body {
 }
 .skip-link:focus { left: 16px; top: 16px; }
 
-/* the signature link: a gold rule that wipes in from the left */
+/* the gold rule that wipes in on hover */
 .illuminated-link {
   position: relative;
   text-decoration: none;
-  font-weight: 500;
-  color: hsl(var(--foreground));
   background: linear-gradient(to right, hsl(var(--gold)), hsl(var(--gold))) no-repeat;
   background-size: 0% 2px;
   background-position: left bottom;
@@ -82,54 +93,74 @@ body {
 }
 .illuminated-link:focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: 3px; border-radius: 2px; }
 
-/* ---------- Shell ---------- */
+/* ---------- Shell (thariq: max-w-[75rem] flex flex-col items-center px-6) ---------- */
 
 .shell {
-  max-width: 75rem;
-  min-height: 100svh;
-  margin: 0 auto;
-  padding: 1.75rem 1.5rem 2.5rem;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: var(--shell-max);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: 28px 40px 40px;
 }
 
-.stack { display: flex; flex-direction: column; gap: 2.5rem; flex: 1; }
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-section);
+  width: 100%;
+}
 
-/* ---------- Masthead ---------- */
+/* ---------- Masthead (thariq: flex items-center justify-between) ---------- */
 
-.masthead { margin-bottom: 3rem; }
-.nav { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
-.nav__side { display: flex; flex: 1; align-items: center; min-width: 0; }
-.nav__side--left { justify-content: flex-start; }
-.nav__side--right { justify-content: flex-end; }
-.nav__center { display: flex; justify-content: center; flex: 0 0 auto; }
+.masthead { width: 100%; padding-bottom: 12px; margin-bottom: 48px; }
+
+.nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.nav__side { z-index: 10; display: flex; flex: 1; align-items: center; min-width: 0; }
+.nav__side--left { justify-content: flex-start; padding-bottom: 32px; }
+.nav__side--right { justify-content: flex-end; gap: 32px; padding-bottom: 32px; }
 
 .nav__home {
-  font-size: 1.15rem;
+  font-size: 15px;
   font-weight: 500;
-  color: hsl(var(--foreground) / .8);
+  color: hsl(var(--foreground) / .85);
   text-decoration: none;
+  white-space: nowrap;
   transition: color .25s ease;
 }
 .nav__home:hover { color: hsl(var(--gold)); }
 
-/* ---------- Mode toggle ---------- */
+.nav__mid { z-index: 0; display: flex; width: 100%; justify-content: center; }
 
-.mode-toggle { display: flex; align-items: center; gap: .5rem; }
+/* ---------- Mode toggle (thariq: 280x48 track, 139px buttons) ---------- */
+
+.mode-toggle { display: flex; align-items: center; gap: 16px; }
 
 .ornament {
   display: block;
-  width: 2.5rem; height: 1px;
+  width: 24px; height: 1px;
   background: linear-gradient(to right, transparent, hsl(var(--gold) / .55));
+  flex: 0 0 auto;
 }
-.ornament--right { background: linear-gradient(to left, transparent, hsl(var(--gold) / .55)); }
+.ornament:last-child { background: linear-gradient(to left, transparent, hsl(var(--gold) / .55)); }
 
 .toggle-track {
   position: relative;
-  width: 280px; height: 48px;
+  width: var(--nav-track);
+  height: var(--nav-track-h);
+  flex: 0 0 auto;
   background: linear-gradient(135deg, hsl(var(--background)), hsl(var(--muted) / .3));
-  border: 1.5px solid hsl(var(--bronze) / .3);
-  border-radius: 2rem;
+  border: 1px solid hsl(var(--bronze) / .3);
+  border-radius: 32px;
   overflow: hidden;
   box-shadow: inset 0 2px 8px #0000001a, 0 2px 12px hsl(var(--gold) / .1);
 }
@@ -139,71 +170,89 @@ body {
 }
 
 .toggle-indicator {
-  position: absolute; left: 4px; top: 50%;
-  transform: translateY(-50%);
-  width: 132px; height: 40px;
+  position: absolute;
+  top: 1px; left: 1px;
+  width: calc(50% - 1px);
+  height: calc(100% - 2px);
   background: linear-gradient(135deg, hsl(var(--gold) / .5), hsl(var(--gold) / .3));
-  border-radius: 2rem;
+  border-radius: 32px;
   box-shadow: 0 4px 16px hsl(var(--gold) / .25), 0 2px 8px hsl(var(--gold) / .12);
-  transition: left .6s var(--ease-spring), background .4s ease, box-shadow .4s ease;
+  transition: transform .6s var(--ease-spring), background .4s ease, box-shadow .4s ease;
+  pointer-events: none;
 }
 .toggle-indicator::before {
-  content: ""; position: absolute; inset: 0; border-radius: 2rem;
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
   background: linear-gradient(135deg, #ffffff4d, #fff0, #ffffff0d);
   opacity: .5;
 }
 [data-mode="personal"] .toggle-indicator {
-  left: calc(100% - 136px);
+  transform: translateX(100%);
   background: linear-gradient(135deg, hsl(var(--burnt-sienna) / .5), hsl(var(--burnt-sienna) / .3));
   box-shadow: 0 4px 16px hsl(var(--burnt-sienna) / .25), 0 2px 8px hsl(var(--burnt-sienna) / .15);
 }
 
 .toggle-option {
-  position: absolute; top: 0; height: 100%; width: 50%;
-  display: flex; align-items: center; justify-content: center; gap: .375rem;
+  position: absolute;
+  top: 0; height: 100%;
+  width: var(--nav-btn);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   background: none; border: none; cursor: pointer;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: .875rem; font-weight: 500; letter-spacing: .5px;
+  font-family: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .5px;
   color: hsl(var(--foreground) / .4);
   transition: color .3s ease, font-weight .3s ease;
+  -webkit-tap-highlight-color: transparent;
 }
+.toggle-option:nth-of-type(1) { left: 0; }
+.toggle-option:nth-of-type(2) { left: var(--nav-btn); }
 .toggle-option:hover { color: hsl(var(--foreground) / .7); }
 .toggle-option[aria-pressed="true"] { color: hsl(var(--foreground)); font-weight: 600; }
 .toggle-option[aria-pressed="true"] .option-icon { opacity: 1; transform: scale(1.1); }
-.toggle-option[aria-pressed="true"] .option-label { text-shadow: 0 0 12px hsl(var(--gold) / .3); }
-.option-icon { opacity: .55; transition: opacity .3s ease, transform .3s ease; }
+.toggle-option:focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: -4px; border-radius: 32px; }
+.option-icon { opacity: .55; transition: opacity .3s ease, transform .3s ease; font-size: 12px; }
 
 /* ---------- Theme button ---------- */
 
 .theme-btn {
   display: grid; place-items: center;
-  width: 38px; height: 38px; padding: 0;
-  border: 1.5px solid hsl(var(--bronze) / .3); border-radius: 50%;
-  background: transparent; color: hsl(var(--foreground) / .6);
-  cursor: pointer; transition: color .25s ease, border-color .25s ease, transform .3s ease;
+  width: 32px; height: 32px; padding: 0;
+  border: none; background: transparent;
+  color: hsl(var(--foreground) / .6);
+  cursor: pointer;
+  transition: color .25s ease, transform .3s ease;
 }
-.theme-btn:hover { color: hsl(var(--gold)); border-color: hsl(var(--gold) / .5); transform: rotate(15deg); }
-.theme-btn:focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: 3px; }
-.theme-btn__icon { grid-area: 1 / 1; font-size: 1rem; line-height: 1; transition: opacity .3s ease; }
+.theme-btn:hover { color: hsl(var(--gold)); transform: rotate(15deg); }
+.theme-btn:focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: 3px; border-radius: 50%; }
+.theme-btn__icon { grid-area: 1 / 1; font-size: 14px; line-height: 1; transition: opacity .3s ease; }
 .theme-btn__icon--sun { display: none; }
-:root[data-theme="dark"] .theme-btn__icon--sun { display: block; }
-:root[data-theme="dark"] .theme-btn__icon--moon { display: none; }
+[data-theme="dark"] .theme-btn__icon--sun { display: block; }
+[data-theme="dark"] .theme-btn__icon--moon { display: none; }
 
-/* ---------- Identity ---------- */
+/* ---------- Identity (thariq: flex flex-col items-center gap-y-4) ---------- */
 
 .identity {
-  display: flex; flex-direction: column; align-items: center; gap: 1rem;
-  padding: 1rem 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 
-.flip { width: 12rem; height: 12rem; perspective: 1000px; cursor: pointer; }
-.flip:focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: 6px; border-radius: 50%; }
-.flip__inner {
-  position: relative; width: 100%; height: 100%;
+.flip {
+  position: relative;
+  width: 192px; height: 192px;
+  padding: 0;
+  background: none; border: none; cursor: pointer;
+  perspective: 1000px;
   transform-style: preserve-3d;
   transition: transform .8s var(--ease-spring);
 }
-.flip:hover .flip__inner, .flip:focus-visible .flip__inner { transform: rotateY(180deg); }
+.flip:hover, .flip:focus-visible { transform: rotateY(180deg); }
+.flip:focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: 6px; border-radius: 50%; }
 .flip__face {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
@@ -212,164 +261,205 @@ body {
   box-shadow: var(--shadow-warm-lg);
   border: 2px solid hsl(var(--bronze) / .25);
 }
-.flip__face--front {
-  background: linear-gradient(145deg, hsl(var(--card)), hsl(var(--muted)));
-  color: hsl(var(--foreground));
-}
-.flip__face--back {
-  transform: rotateY(180deg);
-  background: linear-gradient(145deg, hsl(var(--gold) / .22), hsl(var(--bronze) / .18));
-  color: hsl(var(--gold));
-}
-.monogram {
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 3.75rem; font-weight: 600; letter-spacing: .06em;
-}
-.sigil { font-size: 3.25rem; line-height: 1; }
+.flip__face--front { background: linear-gradient(145deg, hsl(var(--card)), hsl(var(--muted))); color: hsl(var(--foreground)); }
+.flip__face--back { transform: rotateY(180deg); background: linear-gradient(145deg, hsl(var(--gold) / .22), hsl(var(--bronze) / .18)); color: hsl(var(--gold)); }
+.monogram { font-family: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif; font-size: 60px; font-weight: 600; letter-spacing: 1.2px; }
+.sigil { font-size: 52px; line-height: 1; }
 
+/* thariq h1: 48px / 600 / ls 1.2px / lh 48px */
 .name {
   margin: 0;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 3rem; font-weight: 600; letter-spacing: .02em;
+  font-family: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+  font-size: 48px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  line-height: 48px;
   color: hsl(var(--foreground));
   text-align: center;
 }
 
-/* ---------- Rows ---------- */
+/* ---------- Rows (thariq: flex flex-col gap-y-5 md:flex-row; label md:w-1/5) ---------- */
 
-.row { display: flex; flex-direction: column; gap: 1.25rem; }
-.row__label {
-  margin: 0;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 1.5rem; font-weight: 600;
-  color: hsl(var(--foreground));
-}
-.row__body { min-width: 0; }
+.row { display: flex; flex-direction: column; gap: 20px; }
+.row__label { width: 100%; }
+.row__body { width: 100%; min-width: 0; }
 
 @media (min-width: 768px) {
   .row { flex-direction: row; gap: 0; }
-  .row__label { width: 20%; flex-shrink: 0; padding-top: .35rem; }
-  .row__body { width: 66%; }
+  .row__label { width: var(--label-w); flex-shrink: 0; }
+  .row__body { width: 80%; }
 }
 
-/* ---------- Prose ---------- */
-
-.prose { display: flex; flex-direction: column; gap: 1.25rem; }
-.prose--lead { font-size: 1.2rem; line-height: 1.7; }
-.prose p { margin: 0; }
-
-/* ---------- Divider ---------- */
-
-.divider { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: .5rem 0; }
-.divider__rule { height: 1px; width: 4rem; background: linear-gradient(to right, transparent, hsl(var(--gold))); }
-.divider__rule:last-child { background: linear-gradient(to left, transparent, hsl(var(--gold))); }
-.divider__mark { color: hsl(var(--gold)); font-size: .9rem; }
-
-/* ---------- Notes ---------- */
-
-.notes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.5rem; }
-.notes__head { display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap; }
-.notes__title {
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 1.2rem; font-weight: 600;
+/* thariq h2: 24px / 600, Cormorant */
+.row__label h2 {
+  margin: 0;
+  font-family: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+  font-size: 24px;
+  font-weight: 600;
   color: hsl(var(--foreground));
 }
-.notes__meta { font-size: .72rem; color: hsl(var(--muted-foreground)); }
-.notes__blurb { margin: .35rem 0 0; font-size: 1rem; line-height: 1.6; color: hsl(var(--foreground) / .7); }
-.pin { color: hsl(var(--gold) / .7); font-size: .8rem; }
+
+/* thariq lead p: EB Garamond 20px / lh 40px */
+.prose { display: flex; flex-direction: column; gap: 20px; }
+.prose p { margin: 0; }
+.prose--lead {
+  font-family: "EB Garamond Variable", "EB Garamond", Georgia, serif;
+  font-size: 20px;
+  line-height: 40px;
+  color: hsl(var(--foreground));
+}
+
+/* ---------- Posts (thariq: ul gap-y-4; li flex items-baseline justify-between gap-4) ---------- */
+
+.posts {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: flex; flex-direction: column;
+  gap: 16px;
+}
+
+.post {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  text-decoration: none;
+  border-bottom: 1px solid hsl(var(--border) / .55);
+  padding-bottom: 8px;
+  transition: border-color .3s ease;
+}
+.post:hover { border-bottom-color: hsl(var(--gold) / .7); }
+
+/* thariq post link: Cormorant 18px */
+.post__title {
+  font-family: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  transition: color .25s ease;
+}
+.post:hover .post__title { color: hsl(var(--gold)); }
+.post__title:focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: 3px; }
+.post__note {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+}
 
 /* ---------- Cards ---------- */
 
-.cards { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+.cards { display: grid; grid-template-columns: 1fr; gap: 16px; }
 @media (min-width: 620px) { .cards { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 900px) { .cards { grid-template-columns: repeat(3, 1fr); } }
 
 .card {
-  display: flex; flex-direction: column; gap: .75rem;
-  padding: .75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
   border: 1px solid hsl(var(--bronze) / .2);
-  border-radius: var(--radius);
+  border-radius: 8px;
   background: hsl(var(--card));
   box-shadow: var(--shadow-warm);
   text-decoration: none;
   transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
 }
-a.card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-warm-lg);
-  border-color: hsl(var(--gold) / .45);
-}
+a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-warm-lg); border-color: hsl(var(--gold) / .45); }
 a.card:focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: 3px; }
 
 .card__art {
   display: grid; place-items: center;
-  height: 7.5rem;
-  border-radius: calc(var(--radius) - 2px);
-  position: relative; overflow: hidden;
+  height: 112px;
+  border-radius: 6px;
 }
 .card__glyph {
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 2rem; font-weight: 600; letter-spacing: .1em;
+  font-family: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+  font-size: 30px; font-weight: 600; letter-spacing: 1.2px;
   color: hsl(var(--foreground) / .8);
 }
 .card__art--a { background: linear-gradient(140deg, hsl(var(--gold) / .3), hsl(var(--bronze) / .18)); }
 .card__art--b { background: linear-gradient(140deg, hsl(var(--bronze) / .24), hsl(var(--muted))); }
 .card__art--c { background: linear-gradient(140deg, hsl(var(--muted)), hsl(var(--gold) / .16)); }
 .card__art--d { background: linear-gradient(140deg, hsl(var(--burnt-sienna) / .2), hsl(var(--bronze) / .2)); }
-.card__art--e { background: linear-gradient(140deg, hsl(var(--gold) / .2), hsl(var(--muted) / .8)); }
 
-.card__body { display: flex; flex-direction: column; gap: .4rem; padding: 0 .25rem .35rem; }
+.card__body { display: flex; flex-direction: column; gap: 6px; padding: 0 4px 6px; }
 .card__title {
-  margin: 0;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 1.1rem; font-weight: 600; line-height: 1.25;
+  font-family: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+  font-size: 18px; font-weight: 600; line-height: 1.3;
   color: hsl(var(--foreground));
 }
 a.card:hover .card__title { color: hsl(var(--gold)); }
-.card__desc { margin: 0; font-size: .9rem; line-height: 1.55; color: hsl(var(--foreground) / .7); }
+.card__desc { font-size: 14px; line-height: 1.5; color: hsl(var(--foreground) / .7); }
 .card__tag {
-  align-self: flex-start; margin-top: .15rem;
-  font-size: .65rem; letter-spacing: .1em; text-transform: uppercase;
-  padding: .2rem .5rem; border-radius: 2px;
+  align-self: flex-start;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 2px;
   color: hsl(var(--bronze));
   border: 1px solid hsl(var(--bronze) / .35);
 }
 
 /* ---------- Links ---------- */
 
-.links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 1.75rem; }
-.links a { font-size: 1.1rem; }
+.links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 28px; }
+.links a { font-size: 15px; }
 
 /* ---------- Footer ---------- */
 
-.foot { margin-top: auto; padding-top: 3rem; }
-.foot__line {
+.foot { margin-top: auto; padding-top: 48px; width: 100%; }
+.foot p {
   margin: 0;
-  font-size: .78rem; letter-spacing: .04em;
+  font-size: 12px;
+  letter-spacing: .04em;
   color: hsl(var(--muted-foreground));
   text-align: center;
 }
 
 /* ---------- Responsive ---------- */
 
-@media (max-width: 767px) {
-  .shell { padding: 1.25rem 1.1rem 2rem; }
+@media (max-width: 640px) {
+  .shell { padding: 20px 24px 32px; }
+  .stack { gap: 32px; }
+
+  /* thariq keeps the toggle on its own full-width row under 640.
+     The track must be sized in flex terms, not by a fixed px width:
+     a fixed width plus fixed-width children collapses to nothing
+     once the row is narrower than the children. */
+  .nav { flex-wrap: wrap; }
+  .nav__side { flex: 1 1 50%; padding-bottom: 0; }
+  .nav__mid { order: 3; flex: 1 1 100%; width: 100%; margin-top: 12px; }
   .ornament { display: none; }
-  .toggle-track { width: 240px; height: 44px; }
-  .toggle-indicator { width: 112px; height: 36px; }
-  [data-mode="personal"] .toggle-indicator { left: calc(100% - 116px); }
-  .toggle-option { font-size: .8rem; gap: .25rem; }
-  .nav__home { font-size: 1rem; }
-  .stack { gap: 2rem; }
-  .name { font-size: 2.25rem; }
-  .flip { width: 9rem; height: 9rem; }
-  .monogram { font-size: 2.75rem; }
-  .sigil { font-size: 2.25rem; }
-  .prose--lead { font-size: 1.1rem; }
+  .mode-toggle { width: 100%; }
+  .toggle-track { width: 100%; height: 48px; }
+
+  /* The track is absolutely-positioned on desktop so the indicator can
+     sit under fixed 139px halves. Below 640 the halves are in normal
+     flow instead, so the track can size itself to the row. */
+  .toggle-track { display: flex; }
+  .toggle-option {
+    position: static;
+    width: auto;
+    flex: 1 1 50%;
+    min-width: 0;
+  }
+  .option-label { white-space: nowrap; }
+  .toggle-indicator { top: 1px; left: 1px; width: calc(50% - 1px); }
+
+  .name { font-size: 34px; line-height: 40px; letter-spacing: .6px; }
+  .flip { width: 140px; height: 140px; }
+  .monogram { font-size: 44px; }
+  .sigil { font-size: 38px; }
+  .prose--lead { font-size: 18px; line-height: 32px; }
+  .row { gap: 12px; }
+}
+
+/* Very narrow phones: drop the gear/star icons so the two labels
+   have room, and keep the track from ever collapsing. */
+@media (max-width: 380px) {
+  .option-icon { display: none; }
+  .toggle-option { font-size: 13px; letter-spacing: .2px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
-  .flip:hover .flip__inner { transform: none; }
+  .flip:hover, .flip:focus-visible { transform: none; }
 }

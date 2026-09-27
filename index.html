@@ -8,8 +8,8 @@
 <meta name="description" content="Aravind Vasudevan — product manager at Zynga, working on live-ops. From Tamil Nadu, in Bangalore.">
 
 <link rel="canonical" href="https://aravindvas.com/">
-<meta name="theme-color" content="#faf8f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1a2029" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#fbf9f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141a22" media="(prefers-color-scheme: dark)">
 
 <meta property="og:type" content="profile">
 <meta property="og:site_name" content="Aravind Vasudevan">
@@ -22,20 +22,16 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://aravindvas.com/og.png">
 
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
 
 <script>
-/* Set the view and the theme before first paint. */
+/* Resolve the view and theme before first paint. */
 (function () {
   var r = document.documentElement;
   try {
     var v = new URLSearchParams(location.search).get("view");
-    r.dataset.view = (v === "personal") ? "personal" : "professional";
-    r.dataset.mode = r.dataset.view;
-  } catch (e) { r.dataset.view = "professional"; r.dataset.mode = "professional"; }
+    r.dataset.mode = (v === "personal") ? "personal" : "professional";
+  } catch (e) { r.dataset.mode = "professional"; }
   try {
     var t = localStorage.getItem("av-theme");
     if (t !== "light" && t !== "dark") {
@@ -46,72 +42,68 @@
 })();
 </script>
 
-<link rel="stylesheet" href="styles.css">
+<link rel="preload" as="font" type="font/woff2" href="/fonts/eb-garamond-normal.woff2?v=2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/cormorant-garamond-normal.woff2?v=2" crossorigin>
+<link rel="stylesheet" href="/fonts.css?v=2">
+<link rel="stylesheet" href="/styles.css?v=2">
 </head>
 
-<body class="theme-light">
+<body>
 <a class="skip-link" href="#main">Skip to content</a>
 
-<main class="shell">
+<main class="shell" id="main">
 
   <!-- ================= HEADER ================= -->
   <header class="masthead">
-    <nav class="nav" aria-label="global">
+    <nav class="nav" aria-label="Site header">
+
       <div class="nav__side nav__side--left">
         <a href="/" class="nav__home">Aravind Vasudevan</a>
       </div>
 
-      <div class="nav__center">
-        <div class="mode-toggle" id="modeToggle" role="group" aria-label="Choose a view">
-          <span class="ornament ornament--left" aria-hidden="true"></span>
+      <div class="nav__mid">
+        <div class="mode-toggle" role="group" aria-label="Toggle between professional and personal mode">
+          <span class="ornament" aria-hidden="true"></span>
           <div class="toggle-track">
-            <div class="toggle-indicator" id="toggleIndicator" aria-hidden="true"></div>
-            <button class="toggle-option" type="button" data-mode="professional" aria-pressed="true">
+            <span class="toggle-indicator" id="toggleIndicator" aria-hidden="true"></span>
+            <button class="toggle-option" type="button" data-target="professional" aria-pressed="true">
               <span class="option-icon" aria-hidden="true">&#9881;</span>
               <span class="option-label">Professional</span>
             </button>
-            <button class="toggle-option" type="button" data-mode="personal" aria-pressed="false">
+            <button class="toggle-option" type="button" data-target="personal" aria-pressed="false">
               <span class="option-icon" aria-hidden="true">&#10022;</span>
               <span class="option-label">Personal</span>
             </button>
           </div>
-          <span class="ornament ornament--right" aria-hidden="true"></span>
+          <span class="ornament" aria-hidden="true"></span>
         </div>
       </div>
 
       <div class="nav__side nav__side--right">
         <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch to dark mode">
-          <span class="theme-btn__icon theme-btn__icon--sun" aria-hidden="true">&#9788;</span>
           <span class="theme-btn__icon theme-btn__icon--moon" aria-hidden="true">&#9790;</span>
+          <span class="theme-btn__icon theme-btn__icon--sun" aria-hidden="true">&#9788;</span>
         </button>
       </div>
+
     </nav>
   </header>
 
-  <!-- ================= BODY ================= -->
   <div class="stack">
 
     <!-- ---------- identity ---------- -->
     <section class="identity">
-      <div class="flip" tabindex="0" role="img"
-           aria-label="A monogram, A V">
-        <div class="flip__inner">
-          <div class="flip__face flip__face--front">
-            <span class="monogram">AV</span>
-          </div>
-          <div class="flip__face flip__face--back">
-            <span class="sigil" aria-hidden="true">&#10022;</span>
-          </div>
-        </div>
-      </div>
-
+      <button class="flip" type="button" aria-label="A monogram, A V">
+        <span class="flip__face flip__face--front"><span class="monogram">AV</span></span>
+        <span class="flip__face flip__face--back"><span class="sigil" aria-hidden="true">&#10022;</span></span>
+      </button>
       <h1 class="name" data-mode="professional">Aravind Vasudevan</h1>
       <h1 class="name" data-mode="personal">Aravind</h1>
     </section>
 
     <!-- ---------- about: professional ---------- -->
     <section class="row" data-mode="professional">
-      <h2 class="row__label">About</h2>
+      <div class="row__label"><h2>About</h2></div>
       <div class="row__body prose prose--lead">
         <p>Engineer by training, product manager by accident. I work on live&#8209;ops at
         <a class="illuminated-link" href="https://www.zynga.com" rel="noopener">Zynga</a>, which mostly
@@ -124,15 +116,12 @@
         <p>The through-line is a preference for the unglamorous middle: the framework that decides what ships,
         the model that says whether it worked, and the discipline of getting that answer in front of the people
         who can do something about it. I&rsquo;d rather build the thing than present the thing.</p>
-
-        <p>I&rsquo;m the kind of person who keeps a spreadsheet of lessons learned, and who believes most product
-        problems dissolve when you actually go and watch somebody use the product.</p>
       </div>
     </section>
 
     <!-- ---------- about: personal ---------- -->
     <section class="row" data-mode="personal">
-      <h2 class="row__label">About</h2>
+      <div class="row__label"><h2>About</h2></div>
       <div class="row__body prose prose--lead">
         <p>I grew up in Tamil Nadu, went to engineering college for a mechanical engineering degree I don&rsquo;t
         use, and ended up in Bangalore building live&#8209;ops for a mobile racing game. Every one of those steps
@@ -149,160 +138,97 @@
       </div>
     </section>
 
-    <!-- ---------- divider ---------- -->
-    <div class="divider" aria-hidden="true">
-      <span class="divider__rule"></span>
-      <span class="divider__mark">&#10022;</span>
-      <span class="divider__rule"></span>
-    </div>
-
-    <!-- ---------- notes: professional ---------- -->
+    <!-- ---------- posts: professional ---------- -->
     <section class="row" data-mode="professional">
-      <h2 class="row__label">Notes</h2>
+      <div class="row__label"><h2>Notes</h2></div>
       <div class="row__body">
-        <ul class="notes">
-          <li>
-            <div class="notes__main">
-              <div class="notes__head">
-                <span class="pin" title="Pinned">&#10022;</span>
-                <span class="notes__title">Cadence beats spectacle</span>
-                <span class="notes__meta">&middot; product</span>
-              </div>
-              <p class="notes__blurb">Why a reliable, predictable event beats a spectacular one, and what that
-              means for how you schedule a live&#8209;ops calendar.</p>
-            </div>
-          </li>
-          <li>
-            <div class="notes__main">
-              <div class="notes__head">
-                <span class="notes__title">The dashboard was never the bottleneck</span>
-                <span class="notes__meta">&middot; analytics</span>
-              </div>
-              <p class="notes__blurb">A simple number that six teams read beats a sophisticated model that two
-              people read.</p>
-            </div>
-          </li>
-          <li>
-            <div class="notes__main">
-              <div class="notes__head">
-                <span class="notes__title">Write it down once</span>
-                <span class="notes__meta">&middot; craft</span>
-              </div>
-              <p class="notes__blurb">On keeping one honest record of your work instead of a polished version
-              per application.</p>
-            </div>
-          </li>
+        <ul class="posts">
+          <li><a class="post" href="#notes-cadence">
+            <span class="post__title">Cadence beats spectacle</span>
+            <span class="post__note">product</span>
+          </a></li>
+          <li><a class="post" href="#notes-dashboard">
+            <span class="post__title">The dashboard was never the bottleneck</span>
+            <span class="post__note">analytics</span>
+          </a></li>
+          <li><a class="post" href="#notes-write-once">
+            <span class="post__title">Write it down once</span>
+            <span class="post__note">craft</span>
+          </a></li>
         </ul>
       </div>
     </section>
 
-    <!-- ---------- notes: personal ---------- -->
+    <!-- ---------- posts: personal ---------- -->
     <section class="row" data-mode="personal">
-      <h2 class="row__label">Notes</h2>
+      <div class="row__label"><h2>Notes</h2></div>
       <div class="row__body">
-        <ul class="notes">
-          <li>
-            <div class="notes__main">
-              <div class="notes__head">
-                <span class="notes__title">The 20% problem</span>
-                <span class="notes__meta">&middot; on work</span>
-              </div>
-              <p class="notes__blurb">Being too busy to notice you&rsquo;re bored is its own kind of problem.</p>
-            </div>
-          </li>
-          <li>
-            <div class="notes__main">
-              <div class="notes__head">
-                <span class="notes__title">Refereeing a game you care about</span>
-                <span class="notes__meta">&middot; football</span>
-              </div>
-              <p class="notes__blurb">The only sport where doing the job badly is immediately obvious to
-              everyone watching.</p>
-            </div>
-          </li>
-          <li>
-            <div class="notes__main">
-              <div class="notes__head">
-                <span class="notes__title">Cooking for forty people</span>
-                <span class="notes__meta">&middot; weddings</span>
-              </div>
-              <p class="notes__blurb">On feeding a crowd without anyone noticing you&rsquo;re managing a
-              production line.</p>
-            </div>
-          </li>
+        <ul class="posts">
+          <li><a class="post" href="#notes-20">
+            <span class="post__title">The 20% problem</span>
+            <span class="post__note">on work</span>
+          </a></li>
+          <li><a class="post" href="#notes-ref">
+            <span class="post__title">Refereeing a game you care about</span>
+            <span class="post__note">football</span>
+          </a></li>
+          <li><a class="post" href="#notes-cooking">
+            <span class="post__title">Cooking for forty people</span>
+            <span class="post__note">weddings</span>
+          </a></li>
         </ul>
       </div>
     </section>
 
-    <!-- ---------- made: professional only ---------- -->
-    <div class="divider" data-mode="professional" aria-hidden="true">
-      <span class="divider__rule"></span>
-      <span class="divider__mark">&#10022;</span>
-      <span class="divider__rule"></span>
-    </div>
-
-    <section class="row" data-mode="professional">
-      <h2 class="row__label">Things I&rsquo;ve Made</h2>
+    <!-- ---------- made: professional ---------- -->
+    <section class="row row--cards" data-mode="professional">
+      <div class="row__label"><h2>Things I&rsquo;ve Made</h2></div>
       <div class="row__body">
         <div class="cards">
 
           <a class="card" href="https://xueai.app" rel="noopener">
-            <div class="card__art card__art--a" aria-hidden="true"><span class="card__glyph">AI</span></div>
-            <div class="card__body">
-              <h3 class="card__title">AI Engineering, Beginner to Mastery</h3>
-              <p class="card__desc">An interactive course for AI product managers, from what a token is to
-              shipping something that works.</p>
+            <span class="card__art card__art--a"><span class="card__glyph">AI</span></span>
+            <span class="card__body">
+              <span class="card__title">AI Engineering, Beginner to Mastery</span>
+              <span class="card__desc">An interactive course for AI product managers, from what a token is to shipping something that works.</span>
               <span class="card__tag">Live</span>
-            </div>
+            </span>
           </a>
 
           <a class="card" href="https://prep.aravindvas.com" rel="noopener">
-            <div class="card__art card__art--b" aria-hidden="true"><span class="card__glyph">SPM</span></div>
-            <div class="card__body">
-              <h3 class="card__title">Interview Prep Dashboard</h3>
-              <p class="card__desc">My own preparation system &mdash; a running record of questions, stories and
-              the gaps between them.</p>
+            <span class="card__art card__art--b"><span class="card__glyph">SPM</span></span>
+            <span class="card__body">
+              <span class="card__title">Interview Prep Dashboard</span>
+              <span class="card__desc">My own preparation system &mdash; a running record of questions, stories and the gaps between them.</span>
               <span class="card__tag">Live</span>
-            </div>
+            </span>
           </a>
 
           <div class="card card--static">
-            <div class="card__art card__art--c" aria-hidden="true"><span class="card__glyph">LAB</span></div>
-            <div class="card__body">
-              <h3 class="card__title">Performance Lab</h3>
-              <p class="card__desc">A health report rebuilt to run on my own bloodwork instead of a sample
-              patient&rsquo;s.</p>
+            <span class="card__art card__art--c"><span class="card__glyph">LAB</span></span>
+            <span class="card__body">
+              <span class="card__title">Performance Lab</span>
+              <span class="card__desc">A health report rebuilt to run on my own bloodwork instead of a sample patient&rsquo;s.</span>
               <span class="card__tag">In progress</span>
-            </div>
+            </span>
           </div>
 
           <div class="card card--static">
-            <div class="card__art card__art--d" aria-hidden="true"><span class="card__glyph">AO</span></div>
-            <div class="card__body">
-              <h3 class="card__title">Alpha School &mdash; System Atlas</h3>
-              <p class="card__desc">A working map of what it would take to run a school with no teachers in
-              front of the class.</p>
+            <span class="card__art card__art--d"><span class="card__glyph">AO</span></span>
+            <span class="card__body">
+              <span class="card__title">Alpha School &mdash; System Atlas</span>
+              <span class="card__desc">A working map of what it would take to run a school with no teachers in front of the class.</span>
               <span class="card__tag">Research</span>
-            </div>
-          </div>
-
-          <div class="card card--static">
-            <div class="card__art card__art--e" aria-hidden="true"><span class="card__glyph">AV</span></div>
-            <div class="card__body">
-              <h3 class="card__title">This site</h3>
-              <p class="card__desc">Two views of the same person. No framework, no build step, nothing to
-              break.</p>
-              <span class="card__tag">Live</span>
-            </div>
+            </span>
           </div>
 
         </div>
       </div>
     </section>
 
-    <!-- ---------- elsewhere: personal only ---------- -->
+    <!-- ---------- elsewhere: personal ---------- -->
     <section class="row" data-mode="personal">
-      <h2 class="row__label">Elsewhere</h2>
+      <div class="row__label"><h2>Elsewhere</h2></div>
       <div class="row__body">
         <ul class="links">
           <li><a class="illuminated-link" href="https://www.linkedin.com/in/aravind-v" rel="noopener">LinkedIn</a></li>
@@ -315,12 +241,12 @@
   </div>
 
   <footer class="foot">
-    <p class="foot__line" data-mode="professional">Aravind Vasudevan &middot; Product, games, and live operations</p>
-    <p class="foot__line" data-mode="personal">Aravind &middot; Bangalore &middot; mostly out of doors</p>
+    <p data-mode="professional">Aravind Vasudevan &middot; Product, games, and live operations</p>
+    <p data-mode="personal">Aravind &middot; Bangalore &middot; mostly out of doors</p>
   </footer>
 
 </main>
 
-<script src="script.js" defer></script>
+<script src="/script.js?v=2" defer></script>
 </body>
 </html>
