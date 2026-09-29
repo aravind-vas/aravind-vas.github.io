@@ -60,6 +60,18 @@
     });
   }
 
+  /* ---------- coin flip on the DP ----------
+     Hover already flips the card on desktop, but there is no hover on
+     touch, so tap/click has to drive it too. aria-pressed carries the
+     state for assistive tech; the label is left alone because the card
+     shows the same face either way. */
+  Array.prototype.forEach.call(document.querySelectorAll(".flip"), function (card) {
+    card.addEventListener("click", function () {
+      var on = card.classList.toggle("is-flipped");
+      card.setAttribute("aria-pressed", String(on));
+    });
+  });
+
   labelTheme();
 
 })();

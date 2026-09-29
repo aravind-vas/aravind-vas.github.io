@@ -267,7 +267,9 @@ body {
   transform-style: preserve-3d;
   transition: transform .8s var(--ease-spring);
 }
-.flip:hover, .flip:focus-visible { transform: rotateY(180deg); }
+/* Hover flips it on desktop; .is-flipped is the click/tap path, which
+   is the only one that exists on touch. aria-pressed mirrors it. */
+.flip:hover, .flip:focus-visible, .flip.is-flipped { transform: rotateY(180deg); }
 .flip:focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: 6px; border-radius: 50%; }
 .flip__face {
   position: absolute; inset: 0;
@@ -279,6 +281,14 @@ body {
 }
 .flip__face--front { background: linear-gradient(145deg, hsl(var(--card)), hsl(var(--muted))); color: hsl(var(--foreground)); }
 .flip__face--back { transform: rotateY(180deg); background: linear-gradient(145deg, hsl(var(--gold) / .22), hsl(var(--bronze) / .18)); color: hsl(var(--gold)); }
+
+/* The back face is already rotated 180deg so it faces the viewer; the
+   image inside it is then mirrored so the card reads like a real coin
+   turned over. scaleX is applied to the image, not the face, otherwise
+   the two mirrors cancel and the back looks identical to the front. */
+.flip__photo--mirror {
+  transform: scaleX(-1);
+}
 
 /* The photograph fills its face exactly and is clipped by the face's
    own border-radius, so no separate crop is needed in CSS. */
@@ -475,6 +485,9 @@ a.card:hover .card__title { color: hsl(var(--gold)); }
 
   .name { font-size: 34px; line-height: 40px; letter-spacing: .6px; }
   .flip { width: 140px; height: 140px; }
+  /* On touch there is no hover, so the card rests on its tap state. */
+  .flip:hover { transform: none; }
+  .flip.is-flipped { transform: rotateY(180deg); }
   .monogram { font-size: 44px; }
   .sigil { font-size: 38px; }
   .prose--lead { font-size: 18px; line-height: 32px; }
@@ -491,5 +504,7 @@ a.card:hover .card__title { color: hsl(var(--gold)); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
-  .flip:hover, .flip:focus-visible { transform: none; }
+  /* The card still turns over, it just arrives instantly. Removing the
+     transform entirely would make the mirrored back unreachable. */
+  .flip:hover:not(.is-flipped) { transform: none; }
 }
