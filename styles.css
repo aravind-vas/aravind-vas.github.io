@@ -510,53 +510,68 @@ a.card:hover .card__title { color: hsl(var(--gold)); }
 }
 
 /* ==========================================================
-   ▼▼▼  WIP STAMP — TEMPORARY, REMOVE THIS WHOLE BLOCK  ▼▼▼
+   ▼▼▼  PLACEHOLDER STAMP — TEMPORARY, REMOVE THIS BLOCK  ▼▼▼
 
    To take the stamp off the site: delete everything between the
-   WIP STAMP markers below, including these comment lines. There is
-   no HTML, no script and no token elsewhere in the codebase, so
-   that single deletion is the entire removal.
+   PLACEHOLDER STAMP markers below, including these comment lines.
+   There is no HTML, no script and no token elsewhere in the
+   codebase, so that single deletion is the entire removal.
 
-   Drawn as a ::before on <body> so it needs no markup. It sits
-   above the content but is pointer-transparent, so it never
-   blocks the toggle, the links or the coin-flip card.
+   Drawn as a ::before on <body> so it needs no markup. The rule is a
+   real border on a translate(-50%,-50%) box, which is what makes it
+   hug the word instead of spanning the viewport. It is
+   pointer-transparent, so it never blocks the toggle, the links or
+   the coin-flip card.
+
+   Replaces the earlier lowercase "work in progress" watermark; two
+   diagonal stamps would collide, so this is a swap, not an addition.
    ========================================================== */
 
 body::before {
-  content: "work in progress";
+  content: "PLACEHOLDER";
   position: fixed;
-  inset: 0;
+  top: 50%;
+  left: 50%;
   z-index: 90;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
-  font-family: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
-  font-weight: 600;
-  /* 11vw is the measured size at which the rotated word still fits the
-     viewport at every width from 320 to 1440 (the phrase renders ~9.03
-     px wide per 1px of font-size, so the rotated bounding box is
-     ~0.80 x font-size x 9.03). 15vw overflowed on phones. */
-  font-size: 11vw;
+  /* The border hugs the glyphs; padding is the gap inside the rule. */
+  padding: .34em .5em;
+  border: 5px solid hsl(2 72% 46% / .6);
+  border-radius: 2px;
+
+  font-family: "EB Garamond Variable", "EB Garamond", Georgia, serif;
+  font-weight: 700;
+  /* PLACEHOLDER is 11 wide capitals, so it needs ~9.1px of box per 1px
+     of font-size. min(9vw, 13vh) is the largest size whose ROTATED box
+     clears both axes: 11vw overflowed the height on short viewports. */
+  font-size: min(9vw, 13vh);
   line-height: 1;
   letter-spacing: .04em;
-  text-transform: lowercase;
   white-space: nowrap;
-  color: hsl(var(--bronze) / .17);
 
-  transform: rotate(-24deg);
+  color: hsl(2 72% 46% / .85);
+
+  transform: translate(-50%, -50%) rotate(-24deg);
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
 }
 
-:root[data-theme="dark"] body::before { color: hsl(var(--gold) / .2); }
+:root[data-theme="dark"] body::before {
+  color: hsl(2 80% 62% / .85);
+  border-color: hsl(2 80% 62% / .6);
+}
 
 /* Phones get a steeper angle so the word still spans corner to corner. */
 @media (max-width: 640px) {
-  body::before { transform: rotate(-38deg); letter-spacing: .02em; }
+  body::before {
+    transform: translate(-50%, -50%) rotate(-34deg);
+    letter-spacing: .03em;
+    padding: .3em .38em;
+    border-width: 3px;
+  }
 }
 
 /* ==========================================================
-   ▲▲▲  END WIP STAMP — nothing below this line belongs to it  ▲▲▲
+   ▲▲▲  END PLACEHOLDER STAMP — nothing below belongs to it  ▲▲▲
    ========================================================== */
