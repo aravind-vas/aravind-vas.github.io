@@ -508,3 +508,55 @@ a.card:hover .card__title { color: hsl(var(--gold)); }
      transform entirely would make the mirrored back unreachable. */
   .flip:hover:not(.is-flipped) { transform: none; }
 }
+
+/* ==========================================================
+   ▼▼▼  WIP STAMP — TEMPORARY, REMOVE THIS WHOLE BLOCK  ▼▼▼
+
+   To take the stamp off the site: delete everything between the
+   WIP STAMP markers below, including these comment lines. There is
+   no HTML, no script and no token elsewhere in the codebase, so
+   that single deletion is the entire removal.
+
+   Drawn as a ::before on <body> so it needs no markup. It sits
+   above the content but is pointer-transparent, so it never
+   blocks the toggle, the links or the coin-flip card.
+   ========================================================== */
+
+body::before {
+  content: "work in progress";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+  /* 11vw is the measured size at which the rotated word still fits the
+     viewport at every width from 320 to 1440 (the phrase renders ~9.03
+     px wide per 1px of font-size, so the rotated bounding box is
+     ~0.80 x font-size x 9.03). 15vw overflowed on phones. */
+  font-size: 11vw;
+  line-height: 1;
+  letter-spacing: .04em;
+  text-transform: lowercase;
+  white-space: nowrap;
+  color: hsl(var(--bronze) / .17);
+
+  transform: rotate(-24deg);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+:root[data-theme="dark"] body::before { color: hsl(var(--gold) / .2); }
+
+/* Phones get a steeper angle so the word still spans corner to corner. */
+@media (max-width: 640px) {
+  body::before { transform: rotate(-38deg); letter-spacing: .02em; }
+}
+
+/* ==========================================================
+   ▲▲▲  END WIP STAMP — nothing below this line belongs to it  ▲▲▲
+   ========================================================== */
