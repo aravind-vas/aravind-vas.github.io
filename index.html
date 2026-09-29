@@ -24,7 +24,7 @@
 <meta name="twitter:description" content="Product manager and consumer product builder. Most recently five years at Zynga, building CSR Racing 2.">
 <meta name="twitter:image" content="https://aravindvas.com/og.png">
 
-<link rel="icon" href="/favicon.svg?v=4" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=6" type="image/svg+xml">
 
 <script>
 /* Resolve the view and theme before first paint. */
@@ -44,10 +44,11 @@
 })();
 </script>
 
-<link rel="preload" as="font" type="font/woff2" href="/fonts/eb-garamond-normal.woff2?v=4" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="/fonts/cormorant-garamond-normal.woff2?v=4" crossorigin>
-<link rel="stylesheet" href="/fonts.css?v=4">
-<link rel="stylesheet" href="/styles.css?v=4">
+<link rel="preload" as="font" type="font/woff2" href="/fonts/eb-garamond-normal.woff2?v=6" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/cormorant-garamond-normal.woff2?v=6" crossorigin>
+<link rel="preload" as="image" href="/profile-384.jpg?v=6" fetchpriority="high">
+<link rel="stylesheet" href="/fonts.css?v=6">
+<link rel="stylesheet" href="/styles.css?v=6">
 </head>
 
 <body>
@@ -93,12 +94,31 @@
 
   <div class="stack">
 
-    <!-- ---------- identity ---------- -->
+    <!-- ---------- identity ----------
+         Professional shows the photograph; Personal keeps the monogram.
+         Both are in the DOM and the same data-mode gate hides one. -->
     <section class="identity">
-      <button class="flip" type="button" aria-label="A monogram, A V">
-        <span class="flip__face flip__face--front"><span class="monogram">AV</span></span>
-        <span class="flip__face flip__face--back"><span class="sigil" aria-hidden="true">&#10022;</span></span>
-      </button>
+
+      <div class="avatar" data-mode="professional">
+        <button class="flip" type="button" aria-label="Aravind Vasudevan">
+          <span class="flip__face flip__face--front">
+            <img class="flip__photo" src="/profile-384.jpg?v=6" width="384" height="384"
+                 alt="Aravind Vasudevan" decoding="async" fetchpriority="high">
+          </span>
+          <span class="flip__face flip__face--back">
+            <img class="flip__photo" src="/profile-96.jpg" width="96" height="96"
+                 alt="" aria-hidden="true" loading="lazy" decoding="async">
+          </span>
+        </button>
+      </div>
+
+      <div class="avatar" data-mode="personal">
+        <button class="flip" type="button" aria-label="A monogram, A V">
+          <span class="flip__face flip__face--front"><span class="monogram">AV</span></span>
+          <span class="flip__face flip__face--back"><span class="sigil" aria-hidden="true">&#10022;</span></span>
+        </button>
+      </div>
+
       <h1 class="name" data-mode="professional">Aravind Vasudevan</h1>
       <h1 class="name" data-mode="personal">Aravind &rsquo;Vasu&rsquo;</h1>
     </section>
@@ -244,6 +264,6 @@
 
 </main>
 
-<script src="/script.js?v=4" defer></script>
+<script src="/script.js?v=6" defer></script>
 </body>
 </html>
