@@ -433,7 +433,7 @@ a.card:focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: 3px;
 
 .card__art {
   display: grid; place-items: center;
-  height: 112px;
+  height: 148px;
   border-radius: 6px;
 }
 .card__glyph {
@@ -445,6 +445,11 @@ a.card:focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: 3px;
 .card__art--b { background: linear-gradient(140deg, hsl(var(--bronze) / .24), hsl(var(--muted))); }
 .card__art--c { background: linear-gradient(140deg, hsl(var(--muted)), hsl(var(--gold) / .16)); }
 .card__art--d { background: linear-gradient(140deg, hsl(var(--burnt-sienna) / .2), hsl(var(--bronze) / .2)); }
+/* screenshot thumbnails: same box as the glyph art, cropped from the top */
+.card__art--shot { display: block; overflow: hidden; background: hsl(var(--muted)); box-shadow: inset 0 0 0 1px hsl(var(--border)); }
+.card__art--shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform .4s ease; }
+a.card:hover .card__art--shot img { transform: scale(1.04); }
+@media (prefers-reduced-motion: reduce) { a.card:hover .card__art--shot img { transform: none; } }
 
 .card__body { display: flex; flex-direction: column; gap: 6px; padding: 0 4px 6px; }
 .card__title {

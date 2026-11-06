@@ -48,7 +48,7 @@
 <link rel="preload" as="font" type="font/woff2" href="/fonts/cormorant-garamond-normal.woff2?v=14" crossorigin>
 <link rel="preload" as="image" href="/profile-384.jpg?v=14" fetchpriority="high">
 <link rel="stylesheet" href="/fonts.css?v=14">
-<link rel="stylesheet" href="/styles.css?v=15">
+<link rel="stylesheet" href="/styles.css?v=16">
 </head>
 
 <body>
@@ -165,72 +165,38 @@
       </div>
     </section>
 
-    <!-- ---------- posts: professional ---------- -->
-    <section class="row" data-mode="professional">
-      <div class="row__label"><h2>Notes</h2></div>
-      <div class="row__body">
-        <ul class="posts">
-          <li><a class="post" href="/career-database/">
-            <span class="post__title">The career database that won&rsquo;t let me lie</span>
-            <span class="post__note">systems</span>
-          </a></li>
-          <li><a class="post" href="/notes/household-operating-system.html">
-            <span class="post__title">Interview yourself before you build</span>
-            <span class="post__note">systems</span>
-          </a></li>
-          <li><a class="post" href="#notes-cadence">
-            <span class="post__title">Cadence beats spectacle</span>
-            <span class="post__note">product</span>
-          </a></li>
-          <li><a class="post" href="#notes-dashboard">
-            <span class="post__title">The dashboard was never the bottleneck</span>
-            <span class="post__note">analytics</span>
-          </a></li>
-          <li><a class="post" href="#notes-write-once">
-            <span class="post__title">Write it down once</span>
-            <span class="post__note">craft</span>
-          </a></li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- ---------- posts: personal ---------- -->
-    <section class="row" data-mode="personal">
-      <div class="row__label"><h2>Notes</h2></div>
-      <div class="row__body">
-        <ul class="posts">
-          <li><a class="post" href="#notes-quizzes">
-            <span class="post__title">Designing a quiz that a room actually wants to play</span>
-            <span class="post__note">quizzes</span>
-          </a></li>
-          <li><a class="post" href="#notes-weddings">
-            <span class="post__title">Emceeing a wedding as a product problem</span>
-            <span class="post__note">weddings</span>
-          </a></li>
-          <li><a class="post" href="#notes-education">
-            <span class="post__title">Building the education I want for my kid</span>
-            <span class="post__note">parenting</span>
-          </a></li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- ---------- made: professional ---------- -->
+    <!-- ---------- made: professional ----------
+         Shown first: the work is the point of the page.
+         data-room on each card = its room in the planned isometric diorama. -->
     <section class="row row--cards" data-mode="professional">
       <div class="row__label"><h2>Things I&rsquo;ve Made</h2></div>
       <div class="row__body">
         <div class="cards">
-
-          <a class="card" href="https://xueai.app" rel="noopener">
-            <span class="card__art card__art--a"><span class="card__glyph">AI</span></span>
+          <a class="card" href="https://github.com/aravind-vas/household-management-agent" rel="noopener" data-room="kitchen">
+            <span class="card__art card__art--a"><span class="card__glyph">HMA</span></span>
             <span class="card__body">
-              <span class="card__title">AI Engineering, Beginner to Mastery</span>
-              <span class="card__desc">An interactive course for AI product managers, from what a token is to shipping something that works.</span>
+              <span class="card__title">Household Management Agent</span>
+              <span class="card__desc">A WhatsApp-first agent for our home: one shared chat that orders groceries with checkout discipline, plans meals under hard dietary rules, and keeps guests sandboxed.</span>
+              <span class="card__tag">Open source</span>
+            </span>
+          </a>
+          <a class="card" href="https://schools.aravindvas.com" rel="noopener" data-room="study">
+            <span class="card__art card__art--shot"><img src="/thumbs/schools.jpg?v=16" width="640" height="360" alt="Alpha School Research index page" loading="lazy" decoding="async"></span>
+            <span class="card__body">
+              <span class="card__title">Alpha School Research</span>
+              <span class="card__desc">A working map of what it would take to run a school with no teachers in front of the class &mdash; plus a walk through one day inside it.</span>
+              <span class="card__tag">Research</span>
+            </span>
+          </a>
+          <a class="card" href="/menu-planner/" rel="noopener" data-room="kitchen">
+            <span class="card__art card__art--shot"><img src="/thumbs/menu.jpg?v=16" width="640" height="360" alt="Weekly Meal Planner canvas" loading="lazy" decoding="async"></span>
+            <span class="card__body">
+              <span class="card__title">Weekly Meal Planner</span>
+              <span class="card__desc">A drag-and-drop canvas for a week of meals &mdash; every card carries its macros and the share of daily goals it covers, so the week balances as you build it.</span>
               <span class="card__tag">Live</span>
             </span>
           </a>
-
-          <a class="card" href="https://prep.aravindvas.com" rel="noopener">
+          <a class="card" href="https://prep.aravindvas.com" rel="noopener" data-room="study">
             <span class="card__art card__art--b"><span class="card__glyph">SPM</span></span>
             <span class="card__body">
               <span class="card__title">Interview Prep Dashboard</span>
@@ -238,44 +204,92 @@
               <span class="card__tag">Live</span>
             </span>
           </a>
-
-          <a class="card" href="/menu-planner/" rel="noopener">
-            <span class="card__art card__art--a"><span class="card__glyph">MP</span></span>
-            <span class="card__body">
-              <span class="card__title">Weekly Meal Planner</span>
-              <span class="card__desc">A drag-and-drop canvas for a week of meals &mdash; every card carries its macros and the share of daily goals it covers, so the week balances as you build it.</span>
-              <span class="card__tag">Live</span>
-            </span>
-          </a>
-
-          <a class="card" href="/xylophone/" rel="noopener">
-            <span class="card__art card__art--b"><span class="card__glyph">XYL</span></span>
+          <a class="card" href="/xylophone/" rel="noopener" data-room="living">
+            <span class="card__art card__art--shot"><img src="/thumbs/xylophone.jpg?v=16" width="640" height="360" alt="Rainbow toy xylophone in the browser" loading="lazy" decoding="async"></span>
             <span class="card__body">
               <span class="card__title">My Son&rsquo;s Toy Xylophone</span>
               <span class="card__desc">Play my son&rsquo;s 8-bar toy xylophone in the browser, and learn nursery rhymes bar by bar with keyboard, touch or a MIDI piano.</span>
               <span class="card__tag">Live</span>
             </span>
           </a>
-
-          <div class="card card--static">
-            <span class="card__art card__art--c"><span class="card__glyph">LAB</span></span>
+          <a class="card" href="https://github.com/aravind-vas/learn-ai-xeuai" rel="noopener" data-room="study">
+            <span class="card__art card__art--c"><span class="card__glyph">AI</span></span>
+            <span class="card__body">
+              <span class="card__title">AI Engineering, Beginner to Mastery</span>
+              <span class="card__desc">My English translation of an open-source course for AI product managers, from what a token is to shipping something that works. Original at xueai.app.</span>
+              <span class="card__tag">Translation</span>
+            </span>
+          </a>
+          <div class="card card--static" data-room="kitchen">
+            <span class="card__art card__art--d"><span class="card__glyph">LAB</span></span>
             <span class="card__body">
               <span class="card__title">Performance Lab</span>
               <span class="card__desc">A health report rebuilt to run on my own bloodwork instead of a sample patient&rsquo;s.</span>
               <span class="card__tag">In progress</span>
             </span>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <div class="card card--static">
-            <span class="card__art card__art--d"><span class="card__glyph">AO</span></span>
+    <!-- ---------- made: personal ----------
+         Shown first: the work is the point of the page.
+         data-room on each card = its room in the planned isometric diorama. -->
+    <section class="row row--cards" data-mode="personal">
+      <div class="row__label"><h2>Things I&rsquo;ve Made</h2></div>
+      <div class="row__body">
+        <div class="cards">
+          <a class="card" href="/xylophone/" rel="noopener" data-room="living">
+            <span class="card__art card__art--shot"><img src="/thumbs/xylophone.jpg?v=16" width="640" height="360" alt="Rainbow toy xylophone in the browser" loading="lazy" decoding="async"></span>
             <span class="card__body">
-              <span class="card__title">Alpha School &mdash; System Atlas</span>
-              <span class="card__desc">A working map of what it would take to run a school with no teachers in front of the class.</span>
+              <span class="card__title">My Son&rsquo;s Toy Xylophone</span>
+              <span class="card__desc">Play my son&rsquo;s 8-bar toy xylophone in the browser, and learn nursery rhymes bar by bar with keyboard, touch or a MIDI piano.</span>
+              <span class="card__tag">Live</span>
+            </span>
+          </a>
+          <a class="card" href="/telegraph-road/" rel="noopener" data-room="living">
+            <span class="card__art card__art--shot"><img src="/thumbs/telegraph.jpg?v=16" width="640" height="360" alt="Telegraph Road guided listen page" loading="lazy" decoding="async"></span>
+            <span class="card__body">
+              <span class="card__title">Telegraph Road, a guided first listen</span>
+              <span class="card__desc">Fourteen minutes of Dire Straits with a follow-along clock: what to listen for, section by section, before and while you press play.</span>
+              <span class="card__tag">Live</span>
+            </span>
+          </a>
+          <a class="card" href="https://schools.aravindvas.com/day-inside.html" rel="noopener" data-room="living">
+            <span class="card__art card__art--shot"><img src="/thumbs/schools.jpg?v=16" width="640" height="360" alt="Alpha School research page" loading="lazy" decoding="async"></span>
+            <span class="card__body">
+              <span class="card__title">A day inside Alpha School</span>
+              <span class="card__desc">Part of building the education I want my kid to have: what a single school day looks like when software does the teaching.</span>
               <span class="card__tag">Research</span>
             </span>
-          </div>
-
+          </a>
+          <a class="card" href="/menu-planner/" rel="noopener" data-room="kitchen">
+            <span class="card__art card__art--shot"><img src="/thumbs/menu.jpg?v=16" width="640" height="360" alt="Weekly Meal Planner canvas" loading="lazy" decoding="async"></span>
+            <span class="card__body">
+              <span class="card__title">Weekly Meal Planner</span>
+              <span class="card__desc">A drag-and-drop canvas for a week of meals, so the family&rsquo;s week balances as you build it.</span>
+              <span class="card__tag">Live</span>
+            </span>
+          </a>
         </div>
+      </div>
+    </section>
+
+    <!-- ---------- notes: professional ----------
+         Only notes with a written page behind them are listed. -->
+    <section class="row" data-mode="professional">
+      <div class="row__label"><h2>Notes</h2></div>
+      <div class="row__body">
+        <ul class="posts">
+          <li><a class="post" href="/career-database/" data-room="study">
+            <span class="post__title">The career database that won&rsquo;t let me lie</span>
+            <span class="post__note">systems</span>
+          </a></li>
+          <li><a class="post" href="/notes/household-operating-system.html" data-room="kitchen">
+            <span class="post__title">Interview yourself before you build</span>
+            <span class="post__note">systems</span>
+          </a></li>
+        </ul>
       </div>
     </section>
 
