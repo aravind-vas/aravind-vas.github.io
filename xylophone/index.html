@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f1ea">
+<title>My Son's Toy Xylophone</title>
+<meta name="description" content="My son's 8-bar toy xylophone, recorded bar by bar and playable in the browser. Learn nursery rhymes one note at a time with keyboard, touch or MIDI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: the instrument is pinned as the hero; below it, tabs switch between Songs, Free play and About. Wood-and-paint palette taken from the real toy. */
+:root{
+  --bg:#f5f1ea; --surface:#fffdf9; --sunk:#efe9df; --fg:#2a2420; --muted:#6d635a; --line:#e0d8cc;
+  --accent:#9a5b2f; --accent-ink:#ffffff; --wood:#cfa77a; --frame:#a9d3aa;
+  --b-white:#f1efe4; --b-green:#9fd0a2; --b-blue:#3f74bd; --b-lblue:#bcd8ee;
+  --ink-light:#2a2420; --ink-dark:#ffffff;
+  --good:#2f8a4a; --bad:#c2452d; --star:#e0a526;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1a1714; --surface:#24201d; --sunk:#1f1b18; --fg:#f2ece5; --muted:#a99d92; --line:#3a332e;
+  --accent:#e3a877; --accent-ink:#1a1714; --wood:#8a6a48; --frame:#6aa06e; --good:#6cc487; --bad:#f07a62; --star:#f2c14e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1a1714; --surface:#24201d; --sunk:#1f1b18; --fg:#f2ece5; --muted:#a99d92; --line:#3a332e;
+  --accent:#e3a877; --accent-ink:#1a1714; --wood:#8a6a48; --frame:#6aa06e; --good:#6cc487; --bad:#f07a62; --star:#f2c14e; color-scheme:dark}
+*{box-sizing:border-box}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:22px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.1;text-wrap:balance}
+h1{font-size:clamp(1.7rem,5vw,2.5rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.3rem;font-weight:800}
+h3{font-size:1.05rem;font-weight:500}
+p{margin:0;max-width:65ch}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+header{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:end;justify-content:space-between}
+.toggles{display:flex;flex-wrap:wrap;gap:8px}
+.seg{display:inline-flex;background:var(--sunk);border:1px solid var(--line);border-radius:99px;padding:3px}
+.seg button{border:none;background:none;padding:6px 12px;border-radius:99px;cursor:pointer;font-size:.85rem;color:var(--muted);font-weight:700}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+
+/* instrument */
+.stage{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:6px}
+.xylo{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:14px 10px 10px}
+.bars{display:grid;grid-template-columns:repeat(8,1fr);gap:clamp(4px,1.2vw,12px);align-items:center;position:relative;padding:4px clamp(4px,3vw,30px)}
+.rail{position:absolute;left:2%;right:2%;height:9px;background:var(--wood);border-radius:3px}
+.rail.t{top:22%}.rail.b{bottom:22%}
+.bar{position:relative;z-index:1;border:none;border-radius:10px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:8px 0 10px;font-family:var(--display);box-shadow:0 3px 0 rgba(0,0,0,.18);transition:transform .07s,filter .07s;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.bar .bolt{width:8px;height:8px;border-radius:50%;background:#c4c7cb;box-shadow:inset -1px -1px 0 rgba(0,0,0,.25)}
+.bar .num{font-size:clamp(1.05rem,3.4vw,1.7rem);font-weight:800}
+.bar .nt{font-size:clamp(.75rem,2.2vw,1rem);font-weight:500}
+.bar .key{font-family:var(--body);font-size:.68rem;font-weight:700;opacity:.7;border:1px solid currentColor;border-radius:5px;padding:0 4px;margin-top:2px}
+.bar.hit{transform:translateY(3px);filter:brightness(1.1);box-shadow:0 0 0 rgba(0,0,0,.18)}
+.bar.target{animation:glow 1s ease-in-out infinite}
+.bar.nope{animation:shake .3s}
+.bar.dim{opacity:.35}
+@keyframes glow{0%,100%{box-shadow:0 3px 0 rgba(0,0,0,.18),0 0 0 3px var(--accent)}50%{box-shadow:0 3px 0 rgba(0,0,0,.18),0 0 0 8px var(--accent)}}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.c-white{background:var(--b-white);color:var(--ink-light)}
+.c-green{background:var(--b-green);color:var(--ink-light)}
+.c-blue{background:var(--b-blue);color:var(--ink-dark)}
+.c-lblue{background:var(--b-lblue);color:var(--ink-light)}
+.hint{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 16px;font-size:.8rem;color:var(--muted);margin-top:8px}
+kbd{font-family:var(--body);font-size:.75rem;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--surface)}
+
+/* tabs */
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{border:none;background:none;padding:10px 14px;font-family:var(--display);font-weight:800;font-size:1rem;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
+.panel{display:grid;gap:18px}
+
+/* songs */
+.songs-grid{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:18px;align-items:start}
+@media (max-width:720px){.songs-grid{grid-template-columns:1fr}.player{order:-1}}
+.library{display:grid;gap:14px;min-width:0}
+.level{display:grid;gap:6px}
+.level h3{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;font-family:var(--body);font-weight:700;color:var(--accent)}
+.song-btn{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer}
+.song-btn[aria-current="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.song-btn .nm{font-weight:700}
+.stars{color:var(--star);letter-spacing:1px;font-size:.9rem;white-space:nowrap}
+.stars .off{color:var(--line)}
+.player{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:14px;min-width:0}
+.player-h{display:flex;flex-wrap:wrap;gap:10px 16px;justify-content:space-between;align-items:start}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.btn{border:1px solid var(--line);background:var(--sunk);border-radius:99px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:.9rem}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn[disabled]{opacity:.5;cursor:default}
+.status{min-height:1.5em;font-weight:700}
+.status.good{color:var(--good)}.status.bad{color:var(--bad)}
+.phrases{display:grid;gap:10px}
+.phrase{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.lyr{width:100%;font-size:.82rem;color:var(--muted)}
+.dot{width:36px;height:42px;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--display);line-height:1;border:1px solid rgba(0,0,0,.12);padding:0;transition:transform .1s,opacity .2s}
+.dot .n{font-size:1.05rem;font-weight:800}.dot .l{font-size:.64rem;margin-top:3px}
+.dot.now{transform:translateY(-4px);box-shadow:0 0 0 3px var(--accent)}
+.dot.done{opacity:.4}
+.dot.hidden .n,.dot.hidden .l{visibility:hidden}
+.dot.hidden{background:var(--sunk)!important}
+.note{font-size:.85rem;color:var(--muted);border-left:3px solid var(--line);padding-left:10px}
+.note--use{color:var(--fg);border-left-color:var(--accent)}
+.note--use b{color:var(--accent)}
+.lead{font-size:1.02rem;line-height:1.55;max-width:70ch;text-wrap:pretty}
+.progress{font-size:.9rem}
+
+/* free play */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:10px;align-content:start}
+.big{font-family:var(--display);font-size:2rem;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* about */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:.92rem}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+.sw{display:inline-block;width:13px;height:13px;border-radius:4px;vertical-align:-2px;margin-right:6px;border:1px solid rgba(0,0,0,.15)}
+footer{font-size:.8rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.bar,.dot{transition:none}.bar.target{animation:none;box-shadow:0 0 0 4px var(--accent)}.bar.nope{animation:none}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div style="display:grid;gap:4px">
+      <h1>My Son's Toy Xylophone</h1>
+      <p class="muted small">Eight bars: D E F G A B C D. Tap the bars, or press 1–8 or A S D F G H J K on a keyboard.</p>
+    </div>
+    <div class="toggles">
+      <div class="seg" role="group" aria-label="Tuning">
+        <button id="tToy" aria-pressed="true">Our toy's tuning</button>
+        <button id="tTrue" aria-pressed="false">Perfect tuning</button>
+      </div>
+      <div class="seg" role="group" aria-label="Pitch">
+        <button id="oHigh" aria-pressed="true">Real pitch</button>
+        <button id="oLow" aria-pressed="false">Softer (octave down)</button>
+      </div>
+    </div>
+  </header>
+
+  <p class="lead">I recorded every bar of my son&rsquo;s toy xylophone and mapped each note&rsquo;s real pitch, so this plays what his toy actually plays. We use it at home &mdash; his mum, his nanny and I &mdash; to learn a song before we sit down with the real bars, and to keep him playing along with us.</p>
+
+  <div class="stage">
+    <div class="xylo">
+      <div class="bars" id="bars"><div class="rail t"></div><div class="rail b"></div></div>
+      <div class="hint"><span><kbd>1</kbd>–<kbd>8</kbd> or <kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>F</kbd><kbd>G</kbd><kbd>H</kbd><kbd>J</kbd><kbd>K</kbd></span><span id="midiState">MIDI keyboard: not connected</span></div>
+    </div>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tab-songs" aria-selected="true" aria-controls="p-songs">Songs</button>
+    <button role="tab" id="tab-free" aria-selected="false" aria-controls="p-free">Free play &amp; games</button>
+    <button role="tab" id="tab-about" aria-selected="false" aria-controls="p-about">About this xylophone</button>
+  </nav>
+
+  <section class="panel" id="p-songs" role="tabpanel" aria-labelledby="tab-songs">
+    <div class="songs-grid">
+      <div class="library" id="library"></div>
+      <div class="player" id="player">
+        <div class="player-h">
+          <div style="display:grid;gap:3px;min-width:0">
+            <h2 id="sTitle">Song</h2>
+            <div class="muted small" id="sMeta"></div>
+          </div>
+          <div class="actions">
+            <button class="btn" id="bListen">▶ Listen</button>
+            <button class="btn primary" id="bPractice">Practice</button>
+            <button class="btn" id="bMemory">From memory</button>
+            <button class="btn" id="bStop" disabled>Stop</button>
+          </div>
+        </div>
+        <div class="status" id="status" aria-live="polite">Pick a mode. <b>Practice</b> lights up the next bar and waits for you.</div>
+        <div class="phrases" id="phrases"></div>
+        <div class="note" id="sNote" hidden></div>
+        <div class="note note--use" id="sUse"></div>
+      </div>
+    </div>
+    <p class="progress muted" id="overall"></p>
+  </section>
+
+  <section class="panel" id="p-free" role="tabpanel" aria-labelledby="tab-free" hidden>
+    <div class="cards">
+      <div class="card">
+        <h2>Never-wrong mode</h2>
+        <p class="small muted">Dims bars 3 and 7, leaving D E G A B. These five notes sound nice in any order, so a toddler can't hit a sour note.</p>
+        <div><button class="btn" id="bPenta" aria-pressed="false">Turn on</button></div>
+      </div>
+      <div class="card">
+        <h2>Echo game</h2>
+        <p class="small muted">Listen to a short tune, then play it back. Each correct echo adds one note.</p>
+        <div class="big" id="echoScore">0</div>
+        <div class="small muted" id="echoBest">Best: 0 notes</div>
+        <div class="actions"><button class="btn primary" id="bEcho">Start</button><button class="btn" id="bEchoReplay" disabled>Hear it again</button></div>
+        <div class="status" id="echoStatus" aria-live="polite"></div>
+      </div>
+      <div class="card">
+        <h2>MIDI keyboard</h2>
+        <p class="small muted">Plug in a USB piano keyboard and use Chrome or Edge. The white keys D E F G A B C D play bars 1–8. Any D at or above D5 plays bar 8.</p>
+        <div><button class="btn" id="bMidi">Connect MIDI</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-about" role="tabpanel" aria-labelledby="tab-about" hidden>
+    <p>These pitches were measured from recordings I made of my son&rsquo;s own 8-bar toy xylophone. "Our toy's tuning" plays it exactly as measured, slightly flat in places. "Perfect tuning" plays every note exactly on pitch.</p>
+    <div class="tbl"><table id="aboutTbl"><thead><tr><th>Bar</th><th>Colour</th><th>Measured</th><th>Note</th><th>Off by</th></tr></thead><tbody></tbody></table></div>
+    <p class="small muted">100 cents (¢) is one semitone. Bar 8 rings faintly on the real toy, so tap it firmly in the middle. Bars 5 and 6 are almost perfectly in tune.</p>
+  </section>
+
+  <footer>Progress is saved in this browser only.</footer>
+</div>
+
+<script>
+(function(){
+const BARS=[
+ {n:1,c:'white',hz:1173,et:1174.66,note:'D',full:'D6',off:-4},
+ {n:2,c:'green',hz:1301,et:1318.51,note:'E',full:'E6',off:-24},
+ {n:3,c:'blue',hz:1371,et:1396.91,note:'F',full:'F6',off:-36},
+ {n:4,c:'lblue',hz:1543,et:1567.98,note:'G',full:'G6',off:-28},
+ {n:5,c:'white',hz:1763,et:1760.00,note:'A',full:'A6',off:3},
+ {n:6,c:'green',hz:1975,et:1975.53,note:'B',full:'B6',off:0},
+ {n:7,c:'blue',hz:2168,et:2093.00,note:'C',full:'C7',off:62},
+ {n:8,c:'lblue',hz:2310,et:2349.32,note:'D',full:'D7',off:-29}
+];
+const KEYS={'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,a:1,s:2,d:3,f:4,g:5,h:6,j:7,k:8};
+const KEYLBL=['A','S','D','F','G','H','J','K'];
+const COLOR={white:'White',green:'Green',blue:'Dark blue',lblue:'Light blue'};
+
+// song = phrases of [bars, lyric]
+const SONGS=[
+ {id:'scale',t:'Warm-up: up and down',lvl:'Warm-ups',use:"The warm-up: eight bars up, eight down. One bar each &mdash; you play, he copies.",ph:[[[1,2,3,4,5,6,7,8],'All the way up'],[[8,7,6,5,4,3,2,1],'and back down']]},
+ {id:'penta',t:'Warm-up: never-wrong steps',lvl:'Warm-ups',use:"Only the five bars that cannot clash. Let him hit them in any order while you keep a steady pulse.",ph:[[[1,2,4,5,6],'D E G A B'],[[6,5,4,2,1],'and back']]},
+ {id:'rain',t:'Rain, Rain, Go Away',lvl:'Easy',use:"Three bars, short phrases, lots of repeats &mdash; the easiest one for call-and-response.",ph:[[[4,2,4,4,2],'Rain, rain, go away'],[[4,4,2,5,4,4,2],'Come again another day'],[[4,4,2,2,4,4,2],'Little Johnny wants to play'],[[4,2,4,4,2],'Rain, rain, go away']]},
+ {id:'hcb',t:'Hot Cross Buns',lvl:'Easy',use:"The same three bars three times, so it survives him joining in halfway. Pause before &ldquo;one a penny&rdquo; and let him start it.",ph:[[[6,5,4],'Hot cross buns'],[[6,5,4],'Hot cross buns'],[[4,4,4,4,5,5,5,5],'One a penny, two a penny'],[[6,5,4],'Hot cross buns']]},
+ {id:'lune',t:'Au Clair de la Lune',lvl:'Easy',use:"Longer lines. Sing the tune over him while he plays the notes underneath.",ph:[[[4,4,4,5,6,5],'Au clair de la lune'],[[4,6,5,5,4],'mon ami Pierrot'],[[4,4,4,5,6,5],'prête-moi ta plume'],[[4,6,5,5,4],'pour écrire un mot']]},
+ {id:'mary',t:'Mary Had a Little Lamb',lvl:'Getting there',use:"The first song with a jump (bar 5 up to 7). Point at the bar before he strikes it.",ph:[[[5,4,3,4,5,5,5],'Mary had a little lamb'],[[4,4,4],'little lamb'],[[5,7,7],'little lamb'],[[5,4,3,4,5,5,5],'Mary had a little lamb, its'],[[5,4,4,5,4,3],'fleece was white as snow']]},
+ {id:'mac',t:'Old MacDonald Had a Farm',lvl:'Getting there',use:"Call-and-response is built in: you sing &ldquo;and on that farm&rdquo;, he answers with the E-I-E-I-O line.",ph:[[[4,4,4,1,2,2,1],'Old MacDonald had a farm'],[[6,6,5,5,4],'E-I-E-I-O'],[[1,4,4,4,1,2,2,1],'And on that farm he had a cow'],[[6,6,5,5,4],'E-I-E-I-O'],[[1,1,4,4,4],'With a moo moo here'],[[1,1,4,4,4],'and a moo moo there'],[[4,4,4,4,4,4,4,4,4,4,4,4],'Here a moo, there a moo, everywhere a moo moo'],[[4,4,4,1,2,2,1],'Old MacDonald had a farm'],[[6,6,5,5,4],'E-I-E-I-O']]},
+ {id:'incy',t:'Incy Wincy Spider',lvl:'Getting there',use:"Uses bar 8 a lot &mdash; tap it firmly, it rings faintly on the real toy. Slow is fine.",ph:[[[1,4,4,4,5,6,6],'Incy Wincy spider'],[[6,5,4,5,6,4],'climbed up the water spout'],[[6,6,7,8],'Down came the rain'],[[8,7,6,7,8,6],'and washed the spider out'],[[4,4,5,6,6],'Out came the sunshine'],[[6,5,4,5,6,4],'and dried up all the rain'],[[1,1,4,4,4,5,6,6],'And Incy Wincy spider'],[[6,5,4,5,6,4],'climbed up the spout again']]},
+ {id:'twinkle',t:'Twinkle Twinkle Little Star',lvl:'Getting there',note:'Changed to fit: "twinkle twinkle" goes down to the low bars instead of up. Baa Baa Black Sheep uses the same tune.',use:"Goes down to the low bars instead of up, because the toy has no high G. Do the first line only until he has it.",ph:[[[4,4,1,1,2,2,1],'Twinkle, twinkle, little star'],[[7,7,6,6,5,5,4],'How I wonder what you are'],[[8,8,7,7,6,6,5],'Up above the world so high'],[[8,8,7,7,6,6,5],'Like a diamond in the sky'],[[4,4,1,1,2,2,1],'Twinkle, twinkle, little star'],[[7,7,6,6,5,5,4],'How I wonder what you are']]},
+ {id:'lightly',t:'Lightly Row',lvl:'Getting there',use:"Denser than the others. One for when he is happy listening while you play.",ph:[[[8,6,6],'Lightly row'],[[7,5,5],'lightly row'],[[4,5,6,7,8,8,8],'O\'er the glassy waves we go'],[[8,6,6],'Smoothly glide'],[[7,5,5],'smoothly glide'],[[4,6,8,8,4],'On the silent tide'],[[5,5,5,5,5,6,7],'Let the winds and waters be'],[[6,6,6,6,6,7,8],'mingled with our melody'],[[8,6,6],'Sing and float'],[[7,5,5],'sing and float'],[[4,6,8,8,4],'In our little boat']]},
+ {id:'row',t:'Row, Row, Row Your Boat',lvl:'Challenge',note:'Changed to fit: the first "merrily" stays on bar 8 because the toy has no high G.',use:"One long repeated phrase in the middle &mdash; let him take over on &ldquo;merrily&rdquo; while you keep going.",ph:[[[4,4,4,5,6],'Row, row, row your boat'],[[6,5,6,7,8],'Gently down the stream'],[[8,8,8,8,8,8,6,6,6,4,4,4],'Merrily, merrily, merrily, merrily'],[[8,7,6,5,4],'Life is but a dream']]},
+ {id:'pop',t:'Pop Goes the Weasel',lvl:'Challenge',note:'Changed to fit: "Pop!" is on low bar 2 because the toy has no high E.',use:"Ends with a jump down to bar 2 for &ldquo;Pop!&rdquo;. The surprise is the fun part, so exaggerate it.",ph:[[[4,4,5,5,6,8,6,4],'Half a pound of tuppenny rice'],[[1,4,4,5,5,6,4],'Half a pound of treacle'],[[4,4,5,5,6,8,6,4],'That\'s the way the money goes'],[[2,5,7,6,4],'Pop! goes the weasel']]},
+ {id:'ode',t:'Ode to Joy',lvl:'Challenge',use:"No words, so hum it. A good quiet ending to a session.",ph:[[[6,6,7,8,8,7,6,5],'Beethoven, Symphony No. 9'],[[4,4,5,6,6,5,5],''],[[6,6,7,8,8,7,6,5],''],[[4,4,5,6,5,4,4],'']]},
+ {id:'jingle',t:'Jingle Bells (chorus)',lvl:'Challenge',use:"Highest bars, quickest phrases. Do the first two lines and stop while he still wants more.",ph:[[[6,6,6],'Jingle bells'],[[6,6,6],'jingle bells'],[[6,8,4,5,6],'jingle all the way'],[[7,7,7,7,7,6,6,6,6],'Oh what fun it is to ride in a'],[[6,5,5,6,5,8],'one-horse open sleigh, hey!']]}
+];
+const LEVELS=['Warm-ups','Easy','Getting there','Challenge'];
+
+/* storage */
+const STORE='xylo-studio-v1';
+let save={tuning:'toy',octave:0,stars:{},echoBest:0,last:'hcb'};
+try{const s=JSON.parse(localStorage.getItem(STORE)||'null');if(s)save=Object.assign(save,s)}catch(e){}
+function persist(){try{localStorage.setItem(STORE,JSON.stringify(save))}catch(e){}}
+
+/* audio */
+let ctx=null;
+function ac(){if(!ctx){const C=window.AudioContext||window.webkitAudioContext;ctx=new C()}if(ctx.state==='suspended')ctx.resume();return ctx}
+function freq(n){const b=BARS[n-1];return (save.tuning==='true'?b.et:b.hz)/(save.octave?2:1)}
+function strike(n,vel=1){
+  const c=ac(),t=c.currentTime,hz=freq(n);
+  const out=c.createGain();out.gain.value=0.9*vel;out.connect(c.destination);
+  [[1,0.5,1.3],[2.76,0.12,0.28],[5.4,0.05,0.1]].forEach(([m,g,d])=>{
+    const o=c.createOscillator(),v=c.createGain();o.type='sine';o.frequency.value=hz*m;
+    v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(g,t+0.003);v.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(v).connect(out);o.start(t);o.stop(t+d+0.05);
+  });
+}
+
+/* instrument */
+const barsEl=document.getElementById('bars');const barEls={};
+BARS.forEach((b,i)=>{
+  const el=document.createElement('button');
+  el.className='bar c-'+b.c;el.style.height=`clamp(${150-i*9}px, ${36-i*2.2}vw, ${270-i*16}px)`;
+  el.setAttribute('aria-label',`Bar ${b.n}, ${b.note}`);
+  el.innerHTML=`<span class="bolt"></span><span class="num">${b.n}</span><span class="nt">${b.note}</span><span class="key">${KEYLBL[i]}</span><span class="bolt"></span>`;
+  el.addEventListener('pointerdown',e=>{e.preventDefault();play(b.n)});
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();play(b.n)}});
+  barEls[b.n]=el;barsEl.appendChild(el);
+});
+function flash(n){const e=barEls[n];e.classList.add('hit');setTimeout(()=>e.classList.remove('hit'),120)}
+function nope(n){const e=barEls[n];e.classList.remove('nope');void e.offsetWidth;e.classList.add('nope')}
+let pentaOn=false;
+function play(n,fromUser=true){
+  if(pentaOn&&(n===3||n===7)&&fromUser&&!mode)return;
+  strike(n);flash(n);
+  if(fromUser)onUserNote(n);
+}
+document.addEventListener('keydown',e=>{
+  if(e.repeat||e.metaKey||e.ctrlKey||e.altKey)return;
+  const t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'))return;
+  const n=KEYS[e.key.toLowerCase()];if(n){e.preventDefault();play(n)}
+});
+
+/* toggles */
+function setPressed(a,b,on){a.setAttribute('aria-pressed',on);b.setAttribute('aria-pressed',!on)}
+const tToy=document.getElementById('tToy'),tTrue=document.getElementById('tTrue'),oHigh=document.getElementById('oHigh'),oLow=document.getElementById('oLow');
+function syncToggles(){setPressed(tToy,tTrue,save.tuning==='toy');setPressed(oHigh,oLow,!save.octave)}
+tToy.onclick=()=>{save.tuning='toy';syncToggles();persist()};tTrue.onclick=()=>{save.tuning='true';syncToggles();persist()};
+oHigh.onclick=()=>{save.octave=0;syncToggles();persist()};oLow.onclick=()=>{save.octave=1;syncToggles();persist()};
+syncToggles();
+
+/* tabs */
+const tabs=[['tab-songs','p-songs'],['tab-free','p-free'],['tab-about','p-about']];
+tabs.forEach(([t,p])=>document.getElementById(t).onclick=()=>{tabs.forEach(([t2,p2])=>{document.getElementById(t2).setAttribute('aria-selected',t2===t);document.getElementById(p2).hidden=p2!==p})});
+
+/* library */
+function starsHTML(k){const s=save.stars[k]||0;return '<span class="stars" aria-label="'+s+' of 3 stars">'+[1,2,3].map(i=>i<=s?'★':'<span class="off">★</span>').join('')+'</span>'}
+function best(id){return Math.max(save.stars[id+':p']||0,save.stars[id+':m']||0)}
+function renderLibrary(){
+  const lib=document.getElementById('library');lib.innerHTML='';
+  LEVELS.forEach(L=>{
+    const g=document.createElement('div');g.className='level';g.innerHTML=`<h3>${L}</h3>`;
+    SONGS.filter(s=>s.lvl===L).forEach(s=>{
+      const b=document.createElement('button');b.className='song-btn';b.setAttribute('aria-current',s.id===cur.id);
+      const m=save.stars[s.id+':m']||0;
+      b.innerHTML=`<span class="nm">${s.t}</span>${starsHTML(s.id+(m?':m':':p'))}`;
+      b.title=m?'Stars from memory mode':'Stars from practice mode';
+      b.onclick=()=>{stopAll();cur=s;save.last=s.id;persist();renderLibrary();renderSong()};
+      g.appendChild(b);
+    });
+    lib.appendChild(g);
+  });
+  const mastered=SONGS.filter(s=>(save.stars[s.id+':m']||0)>=3).length;
+  document.getElementById('overall').textContent=`Mastered from memory: ${mastered} of ${SONGS.length}. Three stars in "From memory" mode counts as mastered.`;
+}
+
+/* song player */
+let cur=SONGS.find(s=>s.id===save.last)||SONGS[3];
+let seq=[],dots=[],pos=0,misses=0,mode=null,timers=[];
+const statusEl=document.getElementById('status');
+function setStatus(t,cls=''){statusEl.textContent=t;statusEl.className='status '+cls}
+function renderSong(){
+  document.getElementById('sTitle').textContent=cur.t;
+  const total=cur.ph.reduce((a,p)=>a+p[0].length,0);
+  document.getElementById('sMeta').innerHTML=`${cur.lvl} · ${total} notes · practice ${starsHTML(cur.id+':p')} · memory ${starsHTML(cur.id+':m')}`;
+  const ne=document.getElementById('sNote');ne.hidden=!cur.note;ne.textContent=cur.note||'';
+  const ue=document.getElementById('sUse');
+  ue.innerHTML=cur.use?'<b>Playing it together:</b> '+cur.use:'';
+  ue.hidden=!cur.use;
+  const box=document.getElementById('phrases');box.innerHTML='';seq=[];dots=[];
+  cur.ph.forEach(([bars,lyr])=>{
+    const p=document.createElement('div');p.className='phrase';
+    bars.forEach((n,i)=>{
+      const b=BARS[n-1],d=document.createElement('button');
+      d.className='dot c-'+b.c;d.innerHTML=`<span class="n">${n}</span><span class="l">${b.note}</span>`;
+      d.setAttribute('aria-label',`Bar ${n}, ${b.note}`);d.tabIndex=-1;
+      d.onclick=()=>{if(!mode){strike(n);flash(n)}};
+      p.appendChild(d);seq.push({n,phraseEnd:i===bars.length-1});dots.push(d);
+    });
+    if(lyr){const l=document.createElement('div');l.className='lyr';l.textContent=lyr;p.appendChild(l)}
+    box.appendChild(p);
+  });
+}
+function clearMarks(){dots.forEach(d=>d.classList.remove('now','done','hidden'));Object.values(barEls).forEach(e=>e.classList.remove('target'))}
+function setBusy(on){['bListen','bPractice','bMemory'].forEach(id=>document.getElementById(id).disabled=on);document.getElementById('bStop').disabled=!on}
+function stopAll(){timers.forEach(clearTimeout);timers=[];mode=null;clearMarks();setBusy(false);stopEcho(true)}
+document.getElementById('bStop').onclick=()=>{stopAll();setStatus('Stopped.')};
+
+document.getElementById('bListen').onclick=()=>{
+  stopAll();ac();mode='listen';setBusy(true);setStatus('Listen and follow the beads…');
+  let t=0;const beat=420;
+  seq.forEach((s,i)=>{
+    timers.push(setTimeout(()=>{dots.forEach(d=>d.classList.remove('now'));dots[i].classList.add('now');if(i)dots[i-1].classList.add('done');strike(s.n);flash(s.n)},t));
+    t+=beat*(s.phraseEnd?1.7:1);
+  });
+  timers.push(setTimeout(()=>{stopAll();setStatus('Your turn: try Practice.')},t+200));
+};
+function startPlay(m){
+  stopAll();ac();mode=m;pos=0;misses=0;setBusy(true);
+  if(m==='memory')dots.forEach(d=>d.classList.add('hidden'));
+  setStatus(m==='practice'?'Play the glowing bar.':'From memory: no hints. Play the song from the start.');
+  mark();
+}
+document.getElementById('bPractice').onclick=()=>startPlay('practice');
+document.getElementById('bMemory').onclick=()=>startPlay('memory');
+function mark(){
+  dots.forEach((d,i)=>{d.classList.toggle('now',i===pos);d.classList.toggle('done',i<pos);if(mode==='memory'&&i<pos)d.classList.remove('hidden')});
+  Object.values(barEls).forEach(e=>e.classList.remove('target'));
+  if(mode==='practice'&&seq[pos])barEls[seq[pos].n].classList.add('target');
+  if(dots[pos])dots[pos].scrollIntoView({block:'nearest',inline:'nearest'});
+}
+function onUserNote(n){
+  if(echo.listening){echoInput(n);return}
+  if(mode!=='practice'&&mode!=='memory')return;
+  const want=seq[pos].n;
+  if(n===want){pos++;
+    if(pos>=seq.length){finish();return}
+    setStatus(misses?`Nice. ${misses} slip${misses>1?'s':''} so far.`:'Nice, keep going.','good');mark();
+  }else{misses++;nope(n);setStatus(mode==='practice'?`Not quite. Look for bar ${want}.`:`Not quite. Try again (${misses} slip${misses>1?'s':''}).`,'bad');
+    if(mode==='memory'&&misses%3===0){dots[pos].classList.remove('hidden');setStatus(`Hint: next is bar ${want}.`,'bad')}}
+}
+function finish(){
+  const total=seq.length,acc=(total)/(total+misses);
+  const stars=misses<=1?3:acc>=.8?2:1;const key=cur.id+(mode==='memory'?':m':':p');
+  const prev=save.stars[key]||0;if(stars>prev){save.stars[key]=stars;persist()}
+  const m=mode;mode=null;clearMarks();setBusy(false);
+  setStatus(`${'★'.repeat(stars)}${'☆'.repeat(3-stars)}  Done with ${misses} slip${misses===1?'':'s'}.${stars>prev?' New best!':''}${m==='practice'&&stars===3?' Next: try it From memory.':''}`,'good');
+  renderLibrary();renderSong();
+}
+
+/* never-wrong */
+const bPenta=document.getElementById('bPenta');
+bPenta.onclick=()=>{pentaOn=!pentaOn;bPenta.setAttribute('aria-pressed',pentaOn);bPenta.textContent=pentaOn?'Turn off':'Turn on';[3,7].forEach(n=>barEls[n].classList.toggle('dim',pentaOn))};
+
+/* echo game */
+const echo={seq:[],i:0,listening:false};
+const POOL=[1,2,4,5,6,8];
+const eScore=document.getElementById('echoScore'),eBest=document.getElementById('echoBest'),eStat=document.getElementById('echoStatus'),bEcho=document.getElementById('bEcho'),bRe=document.getElementById('bEchoReplay');
+eBest.textContent=`Best: ${save.echoBest} notes`;
+function playEcho(){echo.listening=false;bRe.disabled=true;eStat.textContent='Listen…';eStat.className='status';
+  echo.seq.forEach((n,i)=>timers.push(setTimeout(()=>{strike(n);flash(n)},400+i*480)));
+  timers.push(setTimeout(()=>{echo.listening=true;echo.i=0;bRe.disabled=false;eStat.textContent='Your turn.'},400+echo.seq.length*480))}
+function addNote(){let n;do{n=POOL[Math.floor(Math.random()*POOL.length)]}while(echo.seq.length&&n===echo.seq[echo.seq.length-1]);echo.seq.push(n)}
+bEcho.onclick=()=>{stopAll();ac();echo.seq=[];addNote();addNote();eScore.textContent='0';bEcho.textContent='Restart';playEcho()};
+bRe.onclick=()=>playEcho();
+function stopEcho(silent){echo.listening=false;if(!silent){bRe.disabled=true}}
+function echoInput(n){
+  if(n===echo.seq[echo.i]){echo.i++;if(echo.i===echo.seq.length){
+      const got=echo.seq.length;eScore.textContent=got;if(got>save.echoBest){save.echoBest=got;persist();eBest.textContent=`Best: ${got} notes`}
+      eStat.textContent='Yes! One more note…';eStat.className='status good';echo.listening=false;addNote();timers.push(setTimeout(playEcho,700))}}
+  else{nope(n);echo.listening=false;eStat.textContent=`Oops. You reached ${echo.seq.length-1} notes. Press Restart to go again.`;eStat.className='status bad';bRe.disabled=true}
+}
+
+/* MIDI */
+const midiState=document.getElementById('midiState');
+const PC={2:1,4:2,5:3,7:4,9:5,11:6,0:7};
+document.getElementById('bMidi').onclick=async()=>{
+  if(!navigator.requestMIDIAccess){midiState.textContent='MIDI: this browser has no MIDI support (try Chrome or Edge).';return}
+  try{const m=await navigator.requestMIDIAccess();
+    const hook=()=>{let c=0;m.inputs.forEach(i=>{c++;i.onmidimessage=e=>{const[s,note,vel]=e.data;if((s&0xf0)===0x90&&vel>0){let n=PC[note%12];if(!n)return;if(n===1&&note>=74)n=8;strike(n,Math.max(.35,vel/127));flash(n);onUserNote(n)}}});midiState.textContent=c?`MIDI keyboard: ${c} connected`:'MIDI: allowed, but no keyboard found. Plug one in.'};
+    hook();m.onstatechange=hook;
+  }catch(e){midiState.textContent='MIDI: permission was refused or isn\'t available on this page.'}
+};
+
+/* about */
+document.querySelector('#aboutTbl tbody').innerHTML=BARS.map(b=>`<tr><td><b>${b.n}</b></td><td><span class="sw" style="background:var(--b-${b.c})"></span>${COLOR[b.c]}</td><td>${b.n===8?'≈':''}${b.hz} Hz</td><td>${b.full}</td><td>${b.off>0?'+':b.off<0?'−':'±'}${Math.abs(b.off)}¢</td></tr>`).join('');
+
+renderLibrary();renderSong();
+})();
+</script>
+
+</body>
+</html>

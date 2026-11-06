@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview yourself before you build — Aravind Vasudevan</title>
+<meta name="description" content="How a request for two dashboards became a household operating system — and why the plan, not the screen, is the product.">
+<link rel="canonical" href="https://aravindvas.com/notes/household-operating-system.html">
+<meta property="og:title" content="Interview yourself before you build">
+<meta property="og:description" content="How a request for two dashboards became a household operating system — and why the plan, not the screen, is the product.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/fonts.css">
+<link rel="stylesheet" href="/styles.css?v=15">
+<script>
+  (function () {
+    var t = localStorage.getItem("theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
+<style>
+  .article { max-width: 42rem; margin: 0 auto; padding: 48px 20px 96px; }
+  .article__kicker {
+    font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    color: hsl(var(--muted-foreground)); margin: 0 0 14px;
+  }
+  .article h1 {
+    font-family: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+    font-size: clamp(2rem, 5vw, 2.9rem); font-weight: 600; line-height: 1.15;
+    margin: 0 0 14px;
+  }
+  .article__dek {
+    font-family: "EB Garamond Variable", "EB Garamond", Georgia, serif;
+    font-size: 20px; line-height: 1.6; color: hsl(var(--muted-foreground));
+    margin: 0 0 8px;
+  }
+  .article__byline { font-size: 13px; color: hsl(var(--muted-foreground)); margin: 0 0 40px; }
+  .article__body {
+    font-family: "EB Garamond Variable", "EB Garamond", Georgia, serif;
+    font-size: 19px; line-height: 1.75;
+  }
+  .article__body p { margin: 0 0 1.3em; }
+  .article__body h2 {
+    font-family: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+    font-size: 1.55rem; font-weight: 600; margin: 2.2em 0 .7em;
+  }
+  .article__body em { font-style: italic; }
+  .article__body strong { font-weight: 600; }
+  .article__body a { color: hsl(var(--bronze)); text-decoration: underline; text-underline-offset: 3px; }
+  .article__body a:hover { color: hsl(var(--gold)); }
+  .article__body ol, .article__body ul { margin: 0 0 1.3em; padding-left: 1.3em; }
+  .article__body li { margin: .45em 0; }
+  .article__foot {
+    margin-top: 56px; padding-top: 18px; border-top: 1px solid hsl(var(--border) / .55);
+    font-size: 14px;
+  }
+  .article__foot a { color: hsl(var(--bronze)); text-decoration: none; }
+  .article__foot a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<article class="article" id="main">
+
+  <p class="article__kicker">Systems &middot; Notes</p>
+  <h1>Interview yourself before you build</h1>
+  <p class="article__dek">How a request for two dashboards became a household operating system &mdash; and why the plan, not the screen, is the product.</p>
+  <p class="article__byline">Aravind Vasudevan &middot; October 2026</p>
+
+  <div class="article__body">
+
+    <p>It started, as these things do, with hardware. I had a TV with a streaming stick and an old
+    phone lying around. The obvious move: mount the phone on the fridge, put a kiosk dashboard on
+    the TV, and finally run the household from glowing screens. A weekend project. I could already
+    picture the screenshots.</p>
+
+    <p>I stopped before writing any code and asked the question I&rsquo;d ask any PM pitching me this
+    idea: <em>if and how is this actually needed?</em> Then I did something I&rsquo;ve never regretted &mdash;
+    I interviewed myself.</p>
+
+    <h2>Five questions, before any code</h2>
+
+    <p>The interview was the same one I&rsquo;d run on a raw product idea: whose problem are we solving
+    first? What actually goes wrong today without it? Who authors and signs off on the thing? How
+    does the world respond to it? And four weeks in, what&rsquo;s different if it worked?</p>
+
+    <p>The answers rewrote the project. The failure mode wasn&rsquo;t a missing display &mdash; it was that
+    meals weren&rsquo;t planned, so they defaulted to whatever was comfortable and carbohydrate-heavy,
+    which is quietly hostile to a fitness goal. Instructions for the person who cooks for our family
+    got lost in verbal relay. My own priorities &mdash; work, interview preparation, learning by shipping
+    AI projects, teaching my son to swim &mdash; lived in my head and lost to the loudest thing in the
+    room.</p>
+
+    <p>And one constraint outranked every feature I could have designed: the person who executes most
+    of the household plan doesn&rsquo;t read. She understands simple speech &mdash; a couple of languages &mdash;
+    and pictures. Not text. A text dashboard for her would have been a beautifully engineered thing
+    nobody could use. The right surface for her is audio and big pictorial cards; the right surface
+    for me is a plan I can glance at. Constraints first; features are what&rsquo;s left over.</p>
+
+    <h2>The design bets</h2>
+
+    <p><strong>The plan is the product; the screens are render targets.</strong> Dashboards decay because the
+    data behind them goes stale. What changed my week wasn&rsquo;t a display &mdash; it was one artifact: a
+    reviewed weekly plan that a daily brief is rendered from. So I built the plan pipeline first and
+    deliberately postponed the kiosk screens.</p>
+
+    <p><strong>Design for rejection.</strong> When I built the tool for choosing the week&rsquo;s meals (a drag-and-drop
+    canvas, <a href="/menu-planner/">here</a>), I put in roughly twice as many options as there were
+    slots. A menu with exactly seven dinners is a form to fill in; a surplus is a set of trade-offs to
+    choose between. Saying no became part of the flow.</p>
+
+    <p><strong>Measure the minimum that changes behaviour.</strong> The plan that had worked for me in the past
+    was a meal service: the food arrived, the portions were set, and I stopped thinking about food
+    entirely. Recreating that at home meant portioning &mdash; but weighing every ingredient is a hobby,
+    not a system. So: two weighed items per meal, the rest eyeballed. The measurement discipline is
+    deliberately thinner than a nutritionist would like, because a plan you actually follow beats a
+    perfect one you abandon by Thursday.</p>
+
+    <p><strong>Every loop gets an exit rule.</strong> A feedback loop without a decision rule is just a log. The
+    weight trend has a checkpoint that says tighten, hold, or ease off. The swimming progression my
+    son and I are working through logs how comfortable he was each session &mdash; two rough sessions and
+    we repeat the week; two joyful ones and we advance early. The rules are written down before the
+    data arrives, so the data can&rsquo;t talk me into anything.</p>
+
+    <h2>What shipped</h2>
+
+    <p>Not a dashboard. A small stack of artifacts: a goal stack with an explicit priority order
+    (one leading goal, everything else parallel), a measured weekly menu with weighed portions, a
+    thirty-day progression for the pool, and a weight log with its decision checkpoints. Plus one
+    real tool &mdash; the meal canvas.</p>
+
+    <p>I built it with an AI agent, and the most valuable thing the agent did wasn&rsquo;t write code. It
+    was interview me, hold the constraints in view every time I drifted toward the pretty thing, and
+    keep asking what the loop was before agreeing to build the surface. The code was the easy part.</p>
+
+    <p>The automations &mdash; daily briefs, weekly planning runs &mdash; are configured but switched off on
+    purpose. Run the loop by hand until it&rsquo;s proven, then turn on the machine. Otherwise you&rsquo;ve
+    automated a habit you haven&rsquo;t formed yet.</p>
+
+    <h2>The transferable bit</h2>
+
+    <p>Household or product, the discipline is the same: interview yourself before you build; name
+    the job rather than the artifact you pictured; let the hardest constraint pick the surface; make
+    the data the product; and ship the loop before the dashboard.</p>
+
+    <p>The screen was never the system.</p>
+
+  </div>
+
+  <footer class="article__foot">
+    <p><a href="/">&larr; aravindvas.com</a> &middot; See also: <a href="/menu-planner/">the weekly meal planner</a></p>
+  </footer>
+
+</article>
+
+<script>
+  // theme toggle parity with the main site
+  (function () {
+    var link = document.createElement("a");
+    link.href = "/"; link.textContent = "\u25CE";
+    link.setAttribute("aria-label", "Switch theme");
+    link.style.cssText = "position:fixed;top:18px;right:22px;font-size:18px;text-decoration:none;color:hsl(var(--muted-foreground));cursor:pointer";
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      var dark = document.documentElement.getAttribute("data-theme") === "dark";
+      document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
+      localStorage.setItem("theme", dark ? "light" : "dark");
+    });
+    document.body.appendChild(link);
+  })();
+</script>
+</body>
+</html>

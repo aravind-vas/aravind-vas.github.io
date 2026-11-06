@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The career database that won’t let me lie — Aravind Vasudevan</title>
+<meta name="description" content="A local app with six enforced stages, one claims ledger and two model engines — built so a resume can only say what I can trace to a source.">
+<link rel="canonical" href="https://aravindvas.com/career-database/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The career database that won’t let me lie">
+<meta property="og:description" content="Six enforced stages, one claims ledger, two model engines, and a rule that nothing skips a stage.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/fonts.css">
+<link rel="stylesheet" href="/styles.css?v=15">
+<script>
+  (function () {
+    var t = localStorage.getItem("theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
+<style>
+  .article { max-width: 42rem; margin: 0 auto; padding: 48px 20px 96px; }
+  .article__kicker { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: hsl(var(--muted-foreground)); margin: 0 0 14px; }
+  .article h1 { font-family: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif; font-size: clamp(2rem, 5vw, 2.9rem); font-weight: 600; line-height: 1.15; margin: 0 0 14px; }
+  .article__dek { font-family: "EB Garamond Variable", "EB Garamond", Georgia, serif; font-size: 20px; line-height: 1.6; color: hsl(var(--muted-foreground)); margin: 0 0 8px; }
+  .article__byline { font-size: 13px; color: hsl(var(--muted-foreground)); margin: 0 0 36px; }
+  .article__body { font-family: "EB Garamond Variable", "EB Garamond", Georgia, serif; font-size: 19px; line-height: 1.75; }
+  .article__body p { margin: 0 0 1.3em; }
+  .article__body h2 { font-family: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif; font-size: 1.55rem; font-weight: 600; margin: 2.2em 0 .7em; }
+  .article__body a { color: hsl(var(--bronze)); text-decoration: underline; text-underline-offset: 3px; }
+  .article__body a:hover { color: hsl(var(--gold)); }
+  .article__body ol, .article__body ul { margin: 0 0 1.3em; padding-left: 1.3em; }
+  .article__body li { margin: .45em 0; }
+  .article__body code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .82em; background: hsl(var(--muted) / .5); padding: 1px 5px; border-radius: 4px; }
+  .article__foot { margin-top: 56px; padding-top: 18px; border-top: 1px solid hsl(var(--border) / .55); font-size: 14px; }
+  .article__foot a { color: hsl(var(--bronze)); text-decoration: none; }
+  .article__foot a:hover { text-decoration: underline; }
+
+  .launch {
+    margin: 8px 0 34px; padding: 22px 24px;
+    border: 1px solid hsl(var(--border) / .7); border-radius: 14px;
+    background: hsl(var(--card, var(--background)));
+  }
+  .launch__label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: hsl(var(--muted-foreground)); margin: 0 0 12px; }
+  .launch__btn {
+    display: inline-flex; align-items: center; gap: .5em;
+    font-family: "EB Garamond Variable", Georgia, serif; font-size: 18px; font-weight: 600;
+    padding: 11px 18px; border-radius: 999px; text-decoration: none;
+    color: hsl(var(--background)); background: hsl(var(--foreground));
+  }
+  .launch__btn:hover { opacity: .88; }
+  .launch__note { font-size: 13.5px; line-height: 1.55; color: hsl(var(--muted-foreground)); margin: 12px 0 0; }
+  .stages { font-size: 17px; }
+  .stages li { margin: .5em 0; }
+  .stages b { font-weight: 600; }
+</style>
+</head>
+<body>
+<article class="article" id="main">
+
+  <p class="article__kicker">Systems &middot; Notes</p>
+  <h1>The career database that won&rsquo;t let me lie</h1>
+  <p class="article__dek">I rebuilt my resume pipeline as a local app: six enforced stages, one claims ledger, two model engines, and a rule that nothing skips a stage.</p>
+  <p class="article__byline">Aravind Vasudevan &middot; October 2026</p>
+
+  <div class="launch">
+    <p class="launch__label">The tool</p>
+    <a class="launch__btn" href="http://127.0.0.1:8765/">Open the career database &rarr;</a>
+    <p class="launch__note">This link points at <code>127.0.0.1:8765</code> &mdash; the app running on my own machine.
+    It will not open for you, and that is the design: the pages, the notes and the model credentials never
+    leave the device. Nothing behind this link is hosted on this site.</p>
+  </div>
+
+  <div class="article__body">
+
+    <p>Every resume I have ever written was assembled from memory, under time pressure, against a
+    deadline. That is a bad instrument. Memory is generous in exactly the wrong places: it rounds a
+    number up, remembers the version of the story where I did the thing alone, and quietly forgets the
+    part that was hard.</p>
+
+    <p>So I did the obvious, slightly obsessive thing and built the memory a database, with rules about
+    what it is allowed to claim. Then I made a second discovery: writing the database was the easy part.
+    The hard part was not corrupting it &mdash; and not leaving a good detail stranded three steps from
+    the finish line because I lost interest.</p>
+
+    <h2>What it is</h2>
+
+    <p>A small local web app that runs the whole loop from <em>I remember something</em> to
+    <em>this claim is safe to put on a resume</em>. Six stages, in order, no skipping:</p>
+
+    <ol class="stages">
+      <li><b>Capture.</b> I ramble &mdash; dictated, unstructured, one topic. It is written to disk
+      verbatim before a single question is asked, because a memory that only exists in a chat window
+      disappears at the next context reset.</li>
+      <li><b>Dump review.</b> A model reads the ramble against everything already recorded and says
+      what is new, what conflicts, and &mdash; the useful part &mdash; which <em>steps I left out</em>.
+      People report outcomes and skip the connective work, which is usually the impressive part.</li>
+      <li><b>Interview.</b> One question per turn, each tagged with the gap it closes: a number, its
+      definition, its period, ownership, a decision I skipped, a stakeholder who pushed back. &ldquo;I
+      don&rsquo;t know&rdquo; is an acceptable answer and becomes a recorded gap instead of an invented
+      fact.</li>
+      <li><b>Merge.</b> The record is rewritten additively &mdash; nothing already written is dropped.
+      A second model then audits the result for lost facts, unsupported assertions and quietly upgraded
+      certainty.</li>
+      <li><b>Verify.</b> Each number is checked against the text that supports it, and the whole ledger
+      is scanned for the same figure stated two ways, or two components that quietly add up to more than
+      their own total.</li>
+      <li><b>Bank.</b> A story card is written for interview retrieval, carrying claim IDs rather than
+      fresh prose, so a number exists in exactly one place.</li>
+    </ol>
+
+    <h2>Three rules that do the actual work</h2>
+
+    <p><strong>A claim cannot be confirmed while it is still vague.</strong> Every figure carries a value,
+    a definition of what it measures, a period, and a quoted span from the source that states it. The app
+    refuses the status change if the definition or period is blank. That one rule killed the habit of
+    writing &ldquo;+40%&rdquo; and never saying of what, over which window.</p>
+
+    <p><strong>Merges are audited for loss, not just for error.</strong> The interesting failure mode
+    isn&rsquo;t a hallucination; it&rsquo;s something true disappearing because a rewrite was tidier than
+    the original. A different model family from the writer reads the old record, the new record and the
+    source material, and lists anything that went missing. Its findings are fed back into the next attempt.</p>
+
+    <p><strong>Re-running the check is not a fix.</strong> When the same proposal came back
+    &ldquo;pass&rdquo; after an earlier run had flagged eight problems, I stopped trusting a single green
+    result. The app now keeps every audit run, and a proposal that was ever flagged needs an explicit human
+    yes &mdash; not a luckier sample.</p>
+
+    <h2>Two engines, one set of guarantees</h2>
+
+    <p>The app can be driven by an API model or by a local coding CLI signed into its own account; there is
+    a switch in the header. The stage map changes with it &mdash; a strong model writes, a cheaper one
+    audits, deliberately from a different family so the checker does not share the writer&rsquo;s blind
+    spots.</p>
+
+    <p>What does <em>not</em> change is everything above: same artifacts, same ledger, same gates, same
+    refusals. An engine switch decides who answers. It never decides what the process will accept.</p>
+
+    <h2>Why it runs on my machine</h2>
+
+    <p>Because the contents are the least publishable writing I do. A career database is unfiltered:
+    half-finished stories, numbers I have not verified, the parts that were someone else&rsquo;s fault.
+    Publishing the interface would be trivial; publishing anything behind it would be a mistake.</p>
+
+    <p>So the app binds to localhost, reads its key from the machine, and the only public artifact is the
+    page you are reading. If you open the link above on a device that isn&rsquo;t running it, you get
+    nothing &mdash; which is the correct behaviour, not a broken deploy.</p>
+
+    <h2>The transferable bit</h2>
+
+    <p>The same discipline applies to any document that has to survive being read closely: a performance
+    review, a promotion packet, an investor update. Separate the place facts live from the place they are
+    rendered. Make the unit of truth small enough to check &mdash; one claim, one source, one period. Put
+    the gate before the prose, not after it.</p>
+
+    <p>And keep the stages, even the boring ones. The value of a pipeline isn&rsquo;t that it produces a
+    document. It&rsquo;s that it refuses to produce one from material nobody checked.</p>
+
+  </div>
+
+  <p class="article__foot"><a href="/">&larr; Aravind Vasudevan</a></p>
+</article>
+</body>
+</html>

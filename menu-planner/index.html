@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly Meal Planner — Aravind Vasudevan</title>
+<meta name="description" content="A drag-and-drop weekly meal canvas: meal cards carry their macros and the share of a daily goal they cover, so the week balances as you build it.">
+<link rel="canonical" href="https://aravindvas.com/menu-planner/">
+<meta property="og:title" content="Weekly Meal Planner">
+<meta property="og:description" content="Drag meal cards onto a week grid; macros and % of daily goal balance live as you build.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/fonts.css">
+<link rel="stylesheet" href="/menu-planner/styles.css?v=4">
+<script>
+  // set theme before first paint, same contract as the main site
+  (function () {
+    var t = localStorage.getItem("theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
+</head>
+<body>
+<main class="shell" id="main">
+
+  <header class="masthead">
+    <h1>Weekly Meal Planner</h1>
+    <a href="/">&larr; aravindvas.com</a>
+    <button class="btn" id="themeBtn" type="button" aria-label="Switch theme" style="margin-left:auto">◐</button>
+  </header>
+
+  <p class="lede">
+    A canvas for building a week of meals that actually balances. Every card carries
+    its macros and the slice of a daily goal it covers; drop cards onto the week and
+    the day totals move with them. More options than slots on purpose &mdash; reject
+    freely.
+  </p>
+
+  <noscript>
+    <p class="lede"><strong>This tool needs JavaScript</strong> for drag-and-drop.
+    The recipe data lives in <code>menu-planner/meals-data.js</code> and is readable without it.</p>
+  </noscript>
+
+  <section class="toolbar" aria-label="Daily goals and actions">
+    <div class="goals">
+      <strong style="font-size:.8rem">Daily goals</strong>
+      <label>kcal <input type="number" id="goal-kcal" min="500" step="50"></label>
+      <label>Protein g <input type="number" id="goal-protein" min="20" step="5"></label>
+      <label>Carbs g <input type="number" id="goal-carbs" min="20" step="5"></label>
+      <label>Fat g <input type="number" id="goal-fat" min="10" step="5"></label>
+      <label>Fiber g <input type="number" id="goal-fiber" min="5" step="1"></label>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn" id="btn-import" type="button">Import</button>
+    <button class="btn" id="btn-export" type="button">Export plan</button>
+    <button class="btn" id="btn-starter" type="button">Load starter week</button>
+    <button class="btn btn--accent" id="btn-reset" type="button">Reset week</button>
+  </section>
+
+  <aside class="scratchpad" aria-label="Scratchpad">
+    <label class="scratchpad__label" for="scratch">Scratchpad</label>
+    <textarea id="scratch" class="scratchpad__note" rows="4" placeholder="Jot swaps, groceries, questions&hellip;"></textarea>
+    <div class="scratchpad__row">
+      <button class="chip" id="scratch-copy" type="button">Copy</button>
+      <button class="chip" id="scratch-save" type="button">Save .md</button>
+      <span class="scratchpad__hint">saved in this browser</span>
+    </div>
+  </aside>
+
+  <section class="grid-wrap" aria-label="Week grid">
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <div class="pool-head">
+    <h2>Options</h2>
+    <button class="chip" data-slot="all" aria-pressed="true" type="button">All</button>
+    <button class="chip" data-slot="breakfast" aria-pressed="false" type="button">Breakfast</button>
+    <button class="chip" data-slot="lunch" aria-pressed="false" type="button">Lunch</button>
+    <button class="chip" data-slot="snack" aria-pressed="false" type="button">Snack</button>
+    <button class="chip" data-slot="dinner" aria-pressed="false" type="button">Dinner</button>
+    <input class="pool-search" id="pool-search" type="search" placeholder="Search dishes&hellip;" aria-label="Search dishes">
+    <button class="chip" id="custom-toggle" type="button">+ Custom meal</button>
+  </div>
+
+  <form class="custom" id="custom-form" hidden>
+    <input id="custom-name" type="text" placeholder="Custom meal name (e.g. leftover dal + rice)" aria-label="Custom meal name" required>
+    <select id="custom-slot" aria-label="Preferred slot">
+      <option value="breakfast">Breakfast</option>
+      <option value="lunch">Lunch</option>
+      <option value="snack">Snack</option>
+      <option value="dinner" selected>Dinner</option>
+    </select>
+    <input id="custom-kcal" type="number" min="0" step="10" placeholder="kcal" aria-label="Calories">
+    <input id="custom-protein" type="number" min="0" step="1" placeholder="P g" aria-label="Protein grams">
+    <input id="custom-carbs" type="number" min="0" step="1" placeholder="C g" aria-label="Carbs grams">
+    <input id="custom-fat" type="number" min="0" step="1" placeholder="F g" aria-label="Fat grams">
+    <input id="custom-fiber" type="number" min="0" step="1" placeholder="Fib g" aria-label="Fiber grams">
+    <button class="btn" type="submit">Add to deck</button>
+    <button class="chip" id="custom-cancel" type="button">Cancel</button>
+  </form>
+
+  <section class="pool" id="pool" aria-label="Meal options"></section>
+
+  <section class="howto">
+    <h2>How it works</h2>
+    <ul>
+      <li><strong>Drag a card onto the week</strong> &mdash; any dish fits any tile (Turkish eggs for breakfast is fine). <strong>Click a card, then click the tile</strong> you want it on; <strong>Enter</strong> drops it in the first free slot, <strong>Esc</strong> cancels. Double-click skips the picking.</li>
+      <li><strong>Cmd-drag (or Ctrl-drag) a card on the board</strong> to another tile to <strong>copy</strong> it there; a plain drag <strong>moves</strong> it.</li>
+      <li><strong>Far tiles are easy</strong> &mdash; picking works wherever the tile is, and drags auto-scroll when you get near the screen edges, sideways along the week included.</li>
+      <li><strong>+ Custom meal</strong> adds your own dish to the deck &mdash; just a name and a slot; the macros are optional (blank counts as 0, shown as 0%).</li>
+      <li><strong>Every card shows its macros</strong> (calories, protein, carbs, fat, fiber) and, on the bars, the <strong>percentage of the daily goal</strong> that macro covers.</li>
+      <li><strong>Fiber is tracked for gut health</strong> &mdash; the default goal (25 g/day) is the household's target; day totals show how much of it the day covers. Small boosts (chickpeas in salads, isabgol in yogurt, side salads, extra veg) are already built into the dishes.</li>
+      <li><strong>Day totals update live</strong> under each column &mdash; a day running hot on calories turns red. The numbers are per the portion sizes printed on the card (the weighed serving, not the family pot).</li>
+      <li><strong>Export plan</strong> downloads the week as JSON (and copies it to the clipboard) &mdash; that file is the hand-off to turn the canvas into a real plan with recipes and shopping lists.</li>
+      <li>Your week and goals are saved in this browser automatically. <strong>Reset week</strong> clears the canvas.</li>
+    </ul>
+    <p style="color:hsl(var(--muted-foreground))">
+      Macro values are practical approximations per serving, meant for planning trade-offs
+      &mdash; not clinical precision.
+    </p>
+  </section>
+
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="/menu-planner/meals-data.js?v=4"></script>
+<script src="/menu-planner/app.js?v=4"></script>
+<script>
+  document.getElementById("themeBtn").addEventListener("click", function () {
+    var dark = document.documentElement.getAttribute("data-theme") === "dark";
+    document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
+    localStorage.setItem("theme", dark ? "light" : "dark");
+  });
+</script>
+</body>
+</html>
